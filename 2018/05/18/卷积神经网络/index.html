@@ -92,7 +92,7 @@
 <meta property="og:image" content="http://yoursite.com/picture/6.png">
 <meta property="og:image" content="http://yoursite.com/picture/4.jpg">
 <meta property="og:image" content="http://yoursite.com/picture/5.png">
-<meta property="og:updated_time" content="2018-05-18T08:54:27.269Z">
+<meta property="og:updated_time" content="2018-05-18T09:04:38.833Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="卷积神经网络">
 <meta name="twitter:description" content="大概介绍一下【为什么要用到卷积神经网络？】答：减少每层网络权重参数，加快计算速度，一张图片都是很大的例如一张1000*1000的图片输入到一个全连接的神经网络，输入是3000，则需要的权重数为1000*1000*3000个，这个数字是很大的。卷积神经网络的卷积层的应用能减少每层需要的参数，每个卷积层设置了一个filter过滤器，例如一个3*3的filter，如果该层需要描述10个特征（每个过滤器描">
@@ -336,7 +336,7 @@
       
 
       
-        <h1 id="大概介绍一下"><a href="#大概介绍一下" class="headerlink" title="大概介绍一下"></a>大概介绍一下</h1><h3 id="【为什么要用到卷积神经网络？】"><a href="#【为什么要用到卷积神经网络？】" class="headerlink" title="【为什么要用到卷积神经网络？】"></a>【为什么要用到卷积神经网络？】</h3><p>答：减少每层网络权重参数，加快计算速度，一张图片都是很大的例如一张1000*1000的图片输入到一个全连接的神经网络，输入是3000，则需要的权重数为1000*1000*3000个，这个数字是很大的。卷积神经网络的卷积层的应用能减少每层需要的参数，每个卷积层设置了一个filter过滤器，例如一个3*3的filter，如果该层需要描述10个特征（每个过滤器描述一个特征，10个特征就是设置10个过滤器），所以有（3*3+1）*10=90个参数（加1是偏置），而且<strong>无论输入数据量多大，该层需要的参数都不变，只和设置的过滤器的大小和描述的特征数有关。</strong>  </p>
+        <h1 id="大概介绍一下"><a href="#大概介绍一下" class="headerlink" title="大概介绍一下"></a>大概介绍一下</h1><h3 id="【为什么要用到卷积神经网络？】"><a href="#【为什么要用到卷积神经网络？】" class="headerlink" title="【为什么要用到卷积神经网络？】"></a>【为什么要用到卷积神经网络？】</h3><p>答：减少每层网络权重参数，加快计算速度，一张图片都是很大的例如一张1000*1000的图片输入到一个全连接的神经网络，输入是3000，则需要的权重数为1000*1000*3000个，这个数字是很大的。卷积神经网络的卷积层的应用能减少每层需要的参数，每个卷积层设置了一个filter过滤器，例如一个3*3的filter，如果该层需要描述10个特征（每个过滤器描述一个特征，10个特征就是设置10个过滤器），所以有（3*3+1）*10=90个参数（加1是偏置），而且<strong>无论输入数据量多大，该层需要的参数都不变，只和设置的过滤器的大小和描述的特征数有关。</strong><br><a id="more"></a>  </p>
 <h3 id="【卷积神经网络的结构和每个结构都是干嘛的】"><a href="#【卷积神经网络的结构和每个结构都是干嘛的】" class="headerlink" title="【卷积神经网络的结构和每个结构都是干嘛的】"></a>【卷积神经网络的结构和每个结构都是干嘛的】</h3><h4 id="卷积层-Convolutions-Layer"><a href="#卷积层-Convolutions-Layer" class="headerlink" title="卷积层 Convolutions Layer"></a>卷积层 Convolutions Layer</h4><p>卷积层简单说就是提取特征的。一张图片中有水平的边缘和垂直的边缘，卷积层就是通过设置的filter不断更新学习该图片中的水平边缘和垂直边缘等特征，有简单的水平垂直到复杂的曲线特征。<br>下图可见各种不同filter的效果。只需调整滤波器的数值，就可以执行诸如边缘检测、锐化、模糊等效果——这说明不同的滤波器会从图片中探测到不同的特征，比如边缘、曲线等。<br><img src="\picture\1.png" alt="image"></p>
 <h4 id="池化层-Pooling-Layer"><a href="#池化层-Pooling-Layer" class="headerlink" title="池化层 Pooling Layer"></a>池化层 Pooling Layer</h4><p>池化层没有需要学习的参数，只是对卷积层得到的图片特征降低每个特征映射的维度，但是保留了最重要的信息。空间池化可以有很多种形式：最大(Max)，平均(Average)，求和(Sum)等等。</p>
 <h4 id="全连接层-Fully-Connected-Layer"><a href="#全连接层-Fully-Connected-Layer" class="headerlink" title="全连接层 Fully Connected Layer"></a>全连接层 Fully Connected Layer</h4><p>就是使用了softmax激励函数作为输出层的多层感知机(Multi-Layer Perceptron)，其他很多分类器如支持向量机也使用了softmax。“全连接”表示上一层的每一个神经元，都和下一层的每一个神经元是相互连接的。  </p>
