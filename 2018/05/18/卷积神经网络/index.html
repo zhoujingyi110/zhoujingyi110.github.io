@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="大概介绍一下【为什么要用到卷积神经网络？】答：减少每层网络权重参数，加快计算速度，一张图片都是很大的例如一张1000*1000的图片输入到一个全连接的神经网络，输入是3000，则需要的权重数为1000*1000*3000个，这个数字是很大的。卷积神经网络的卷积层的应用能减少每层需要的参数，每个卷积层设置了一个filter过滤器，例如一个3*3的filter，如果该层需要描述10个特征（每个过滤器描">
+<meta property="og:type" content="article">
+<meta property="og:title" content="卷积神经网络">
+<meta property="og:url" content="http://yoursite.com/2018/05/18/卷积神经网络/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="大概介绍一下【为什么要用到卷积神经网络？】答：减少每层网络权重参数，加快计算速度，一张图片都是很大的例如一张1000*1000的图片输入到一个全连接的神经网络，输入是3000，则需要的权重数为1000*1000*3000个，这个数字是很大的。卷积神经网络的卷积层的应用能减少每层需要的参数，每个卷积层设置了一个filter过滤器，例如一个3*3的filter，如果该层需要描述10个特征（每个过滤器描">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/pictuer/1.png">
+<meta property="og:image" content="http://yoursite.com/pictuer/2.gif">
+<meta property="og:image" content="http://yoursite.com/pictuer/3.png">
+<meta property="og:image" content="http://yoursite.com/pictuer/6.png">
+<meta property="og:image" content="http://yoursite.com/pictuer/4.jpg">
+<meta property="og:image" content="http://yoursite.com/pictuer/5.png">
+<meta property="og:updated_time" content="2018-05-18T07:23:20.768Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="卷积神经网络">
+<meta name="twitter:description" content="大概介绍一下【为什么要用到卷积神经网络？】答：减少每层网络权重参数，加快计算速度，一张图片都是很大的例如一张1000*1000的图片输入到一个全连接的神经网络，输入是3000，则需要的权重数为1000*1000*3000个，这个数字是很大的。卷积神经网络的卷积层的应用能减少每层需要的参数，每个卷积层设置了一个filter过滤器，例如一个3*3的filter，如果该层需要描述10个特征（每个过滤器描">
+<meta name="twitter:image" content="http://yoursite.com/pictuer/1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"right","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/05/18/卷积神经网络/"/>
+
+
+
+
+
+  <title>卷积神经网络 | Hexo</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Hexo</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-schedule">
+          <a href="/schedule/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-calendar"></i> <br />
+            
+            日程表
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/05/18/卷积神经网络/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="ZYYZ">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">卷积神经网络</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-18T15:12:08+08:00">
+                2018-05-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="大概介绍一下"><a href="#大概介绍一下" class="headerlink" title="大概介绍一下"></a>大概介绍一下</h1><h3 id="【为什么要用到卷积神经网络？】"><a href="#【为什么要用到卷积神经网络？】" class="headerlink" title="【为什么要用到卷积神经网络？】"></a>【为什么要用到卷积神经网络？】</h3><p>答：减少每层网络权重参数，加快计算速度，一张图片都是很大的例如一张1000*1000的图片输入到一个全连接的神经网络，输入是3000，则需要的权重数为1000*1000*3000个，这个数字是很大的。卷积神经网络的卷积层的应用能减少每层需要的参数，每个卷积层设置了一个filter过滤器，例如一个3*3的filter，如果该层需要描述10个特征（每个过滤器描述一个特征，10个特征就是设置10个过滤器），所以有（3*3+1）*10=90个参数（加1是偏置），而且<strong>无论输入数据量多大，该层需要的参数都不变，只和设置的过滤器的大小和描述的特征数有关。</strong>  </p>
+<h3 id="【卷积神经网络的结构和每个结构都是干嘛的】"><a href="#【卷积神经网络的结构和每个结构都是干嘛的】" class="headerlink" title="【卷积神经网络的结构和每个结构都是干嘛的】"></a>【卷积神经网络的结构和每个结构都是干嘛的】</h3><h4 id="卷积层-Convolutions-Layer"><a href="#卷积层-Convolutions-Layer" class="headerlink" title="卷积层 Convolutions Layer"></a>卷积层 Convolutions Layer</h4><p>卷积层简单说就是提取特征的。一张图片中有水平的边缘和垂直的边缘，卷积层就是通过设置的filter不断更新学习该图片中的水平边缘和垂直边缘等特征，有简单的水平垂直到复杂的曲线特征。<br>下图可见各种不同filter的效果。只需调整滤波器的数值，就可以执行诸如边缘检测、锐化、模糊等效果——这说明不同的滤波器会从图片中探测到不同的特征，比如边缘、曲线等。<br><img src="\pictuer\1.png" alt="image"></p>
+<h4 id="池化层-Pooling-Layer"><a href="#池化层-Pooling-Layer" class="headerlink" title="池化层 Pooling Layer"></a>池化层 Pooling Layer</h4><p>池化层没有需要学习的参数，只是对卷积层得到的图片特征降低每个特征映射的维度，但是保留了最重要的信息。空间池化可以有很多种形式：最大(Max)，平均(Average)，求和(Sum)等等。</p>
+<h4 id="全连接层-Fully-Connected-Layer"><a href="#全连接层-Fully-Connected-Layer" class="headerlink" title="全连接层 Fully Connected Layer"></a>全连接层 Fully Connected Layer</h4><p>就是使用了softmax激励函数作为输出层的多层感知机(Multi-Layer Perceptron)，其他很多分类器如支持向量机也使用了softmax。“全连接”表示上一层的每一个神经元，都和下一层的每一个神经元是相互连接的。  </p>
+<h1 id="详细解释一下"><a href="#详细解释一下" class="headerlink" title="详细解释一下"></a>详细解释一下</h1><h4 id="卷积层-Convolutions-Layer-1"><a href="#卷积层-Convolutions-Layer-1" class="headerlink" title="卷积层 Convolutions Layer"></a>卷积层 Convolutions Layer</h4><ul>
+<li>过滤器 Filter=f：在训练之前需要指定一些参数：滤波器的个数，滤波器尺寸、网络架构等等。滤波器越多，从图像中提取的特征就越多，模式识别能力就越强。  </li>
+<li>步长 Strided=s：过滤器移动的大小，当Stride=1的时候就是逐个像素地滑动。当Stride=2的时候每次就会滑过2个像素。步幅越大，特征映射越小。</li>
+<li>填充 Padding=p：image向外填充的大小，有same和valid两种选项。same是卷积操作后输出图像大小和输入图像大小相同，自动判断p设置为多大。valid是不设置填充，即p=0。</li>
+<li>通道 Channels=Nc：这个可以理解为一张彩色图片可以分为RGB三个通道。图片的通道数和filter的通道数必须相同。</li>
+</ul>
+<p>下图是卷积层直观的计算过程，左边是一幅图片image大小5*5，image中黄色框中右下角的乘数就是过滤器filter的数值该filter大小是3*3，image中小黄色框中的两个数值相乘，再相加放到右边的矩阵中，直到结束。<br><img src="\pictuer\2.gif" alt="image"><br>卷积操作之后再加上偏差bias，然后再进过激励函数，一层卷积操作才结束。<br>激励函数可以是下图的ReLU函数，也可以是tanh和sigmod。但多数情况下ReLU的表现更好<br><img src="\pictuer\3.png" alt="image"></p>
+<h4 id="池化层-Pooling-Layer-1"><a href="#池化层-Pooling-Layer-1" class="headerlink" title="池化层 Pooling Layer"></a>池化层 Pooling Layer</h4><p>空间池化（也叫亚采样或下采样）降低了每个特征映射的维度，但是保留了最重要的信息。空间池化可以有很多种形式：最大(Max)，平均(Average)，求和(Sum)等等。</p>
+<p>以最大池化为例，我们定义了空间上的邻域（2x2的窗）并且从纠正特征映射中取出窗里最大的元素。除了取最大值以额外，我们也可以取平均值（平均池化）或者把窗里所有元素加起来。实际上，最大池化已经显示了最好的成效。<br>池化操作图如下：<br><img src="\pictuer\6.png" alt="image"><br>我们以2格的步幅(Stride)滑动2x2的窗，并且取每个区域的最大值。<br>池化的功能：</p>
+<ul>
+<li>使输入表征（特征维度）更小而易操作。</li>
+<li>减少网络中的参数与计算数量，从而遏制过拟合</li>
+<li>增强网络对输入图像中的小变形、扭曲、平移的鲁棒性（输入里的微小扭曲不会改变池化输出——因为我们在局部邻域已经取了最大值/平均值）。</li>
+<li>帮助我们获得不因尺寸而改变的等效图片表征。这非常有用，因为这样我们就可以探测到图片里的物体，不论那个物体在哪。  <h4 id="全连接层-Fully-Connected-Layer-1"><a href="#全连接层-Fully-Connected-Layer-1" class="headerlink" title="全连接层 Fully Connected Layer"></a>全连接层 Fully Connected Layer</h4>卷积层和池化层呢个的输出代表了输入图像的高级特征，全连接层的目的就是用这些特征进行分类，类别基于训练集。 除了分类以外，加入全连接层也是学习特征之间非线性组合的有效办法。卷积层和池化层提取出来的特征很好，但是如果考虑这些特征之间的组合，就更好了。</li>
+</ul>
+<p>全连接层的输出概率之和为1，这是由激励函数Softmax保证的。Softmax函数把任意实值的向量转变成元素取之0-1且和为1的向量。</p>
+<h1 id="举个栗子"><a href="#举个栗子" class="headerlink" title="举个栗子"></a>举个栗子</h1><p>上面的动态图只是简单描述了卷积操作，但是实际中还有很多细节。下面通过一个识别手写字符的例子来过一边卷积神经网络在实际中的应用。<br>下图是字符识别的CNN网络，网络结构是卷积层-&gt;池化层-&gt;卷积层-&gt;池化层-&gt;全连接层-&gt;全连接层-&gt;分类。<br><img src="\pictuer\4.jpg" alt="image"><br><strong>conv1：</strong><br>input：32*32*1的图片。<br>filter：3*3*1，设置6个filter。<br>output：28*28*6。<br>padding：填充为valid，p=0。<br>stride：步长是1。<br>这一层用到的参数个数是：（3*3+1）<em>6 =60<br>input-&gt;output图片大小的公式：输入n\</em>n*Nc<br><strong>((n+2p-f)/s)+1向下取整</strong>，filter溢出的不计算。<br><strong>pool1：</strong><br>input：28*28*6。<br>pool：2*2,最大池化。<br>stride：每次移动2个单位。<br>output：14*14*6。<br>池化操作对于图像的长和宽都减半，不改变通道数。<br>下面根据具体代码来看如何定义一个卷积网络<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">#定义了步长为1，padding为VAILD，</span><br><span class="line">def conv2d(x, W):</span><br><span class="line">return tf.nn.conv2d(x, W, strides=[1, 1, 1, 1], padding=&apos;VALID&apos;)</span><br><span class="line">#池化操作，池化大小为2*2，步长为2，最大池化操作</span><br><span class="line">def max_pool_2x2(x):</span><br><span class="line">return tf.nn.max_pool(x, ksize=[1, 2, 2, 1],</span><br><span class="line">strides=[1, 2, 2, 1], padding=&apos;SAME&apos;)</span><br><span class="line">#下面定义了权重也就是filter需要更新学习的，大小为3*3，通道数1，描述特征数6，也就是filter个数，然后是定义了偏置b</span><br><span class="line">W_conv1 = weight_variable([3, 3, 1, 6])</span><br><span class="line">b_conv1 = bias_variable([6])</span><br><span class="line">#将图像转化为下面的张量</span><br><span class="line">x_image = tf.reshape(x, [-1,32,32,1])</span><br><span class="line">#卷积操作，加上偏置，激励函数</span><br><span class="line">h_conv1 = tf.nn.relu(conv2d(x_image, W_conv1) + b_conv1)</span><br><span class="line">#池化操作</span><br><span class="line">h_pool1 = max_pool_2x2(h_conv1)</span><br></pre></td></tr></table></figure></p>
+<p><strong>conv2：</strong><br>input：14*14*6的图片。<br>filter：5*5*6，设置16个filter。<br>output：10*10*16。<br>padding：填充为valid，p=0。<br>stride：步长是1。<br>这二层用到的参数个数是：（5*5*6+1）<em>16 =2400<br>第二层卷积层的卷积操作和第一层有所不同，因为第一层卷积的通道数为1，所以对于输入的图片就直接进行卷积操作，第二层卷积层的输入的通道数是6，所以设置的filter的通道数也是6，这里的卷积操作是把filter的5\</em>5*6大小的向量当做一个立方体，同时作用在输入的向量上，而不是一个一个计算，具体的操作如下图：<br><img src="\pictuer\5.png" alt="image"><br><strong>pool2：</strong><br>input：10*10*16。<br>pool：2*2,最大池化。<br>stride：每次移动2个单位。<br>output：5*5*16。<br>池化操作对于图像的长和宽都减半，不改变通道数<br>代码实现如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">W_conv2 = weight_variable([5, 5, 6, 16])</span><br><span class="line">b_conv2 = bias_variable([16])</span><br><span class="line">h_conv2 = tf.nn.relu(conv2d(h_pool1, W_conv2) + b_conv2)</span><br><span class="line">h_pool2 = max_pool_2x2(h_conv2)</span><br></pre></td></tr></table></figure></p>
+<p>FC3：<br>上层池化层输出的5*5*16的向量展开成1维，总共400个，全连接输出120个。<br>FC4:<br>输入120个节点，输出84个节点。<br>output：<br>输入84个节点，输出10个节点，分别为每个数字的概率。</p>
+<h1 id="刚开始学的一些误区"><a href="#刚开始学的一些误区" class="headerlink" title="刚开始学的一些误区"></a>刚开始学的一些误区</h1><ul>
+<li>通道的含义，卷积操作中输入的通道数和filter的通道数相同，filter的个数也就是描述特征数等于输出的通道数。<br>n*n*Nc-&gt;f*f*Nc-&gt;((n+2p-f)/s)+1*((n+2p-f)/s)+1*Nc’<br>其中Nc为输入和filter的通道数，Nc’为filter个数。</li>
+<li>第一层卷积层的操作比较简单，通过卷积动图就可以理解，然而到第二层卷积层由于filter通道数不为1了，所以操作也有了变化，将几个filter同时作用给输入的图片然后输出一张图片，最后还是保持filter个数等于输出的通道数。</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/05/18/hello/" rel="next" title="程序员惯例————hello word！！！">
+                <i class="fa fa-chevron-left"></i> 程序员惯例————hello word！！！
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">ZYYZ</p>
+              <p class="site-description motion-element" itemprop="description">一瓶子不满，半瓶子晃悠。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/zhoujingyi110" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#大概介绍一下"><span class="nav-number">1.</span> <span class="nav-text">大概介绍一下</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#【为什么要用到卷积神经网络？】"><span class="nav-number">1.0.1.</span> <span class="nav-text">【为什么要用到卷积神经网络？】</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#【卷积神经网络的结构和每个结构都是干嘛的】"><span class="nav-number">1.0.2.</span> <span class="nav-text">【卷积神经网络的结构和每个结构都是干嘛的】</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#卷积层-Convolutions-Layer"><span class="nav-number">1.0.2.1.</span> <span class="nav-text">卷积层 Convolutions Layer</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#池化层-Pooling-Layer"><span class="nav-number">1.0.2.2.</span> <span class="nav-text">池化层 Pooling Layer</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#全连接层-Fully-Connected-Layer"><span class="nav-number">1.0.2.3.</span> <span class="nav-text">全连接层 Fully Connected Layer</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#详细解释一下"><span class="nav-number">2.</span> <span class="nav-text">详细解释一下</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#卷积层-Convolutions-Layer-1"><span class="nav-number">2.0.0.1.</span> <span class="nav-text">卷积层 Convolutions Layer</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#池化层-Pooling-Layer-1"><span class="nav-number">2.0.0.2.</span> <span class="nav-text">池化层 Pooling Layer</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#全连接层-Fully-Connected-Layer-1"><span class="nav-number">2.0.0.3.</span> <span class="nav-text">全连接层 Fully Connected Layer</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#举个栗子"><span class="nav-number">3.</span> <span class="nav-text">举个栗子</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#刚开始学的一些误区"><span class="nav-number">4.</span> <span class="nav-text">刚开始学的一些误区</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ZYYZ</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
