@@ -90,7 +90,7 @@
 <meta property="og:image" content="http://yoursite.com/picture/20140302234224515.png">
 <meta property="og:image" content="http://yoursite.com/picture/600px-Logistic-curve.svg.png">
 <meta property="og:image" content="http://yoursite.com/picture/blog-long_valley-resize.gif">
-<meta property="og:updated_time" content="2018-09-24T06:06:57.266Z">
+<meta property="og:updated_time" content="2018-09-24T06:11:07.884Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="逻辑回归（Logistic Regression）">
 <meta name="twitter:description" content="逻辑回归逻辑回归VS线性回归逻辑回归不是回归（线性回归是利用数理统计中回归分析，来确定两种或两种以上变量间相互依赖的定量关系的一种统计分析方法），而是二分类器，分类结果y对影响因素x_i之间的一种多变量分析方法，判断多个变量对于结果的影响。">
@@ -296,7 +296,7 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-09-24T14:07:05+08:00">
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-09-24T14:22:43+08:00">
                 2018-09-24
               </time>
             
@@ -367,7 +367,7 @@
 <script type="math/tex; mode=display">p(y_i=1|x_i)=\dfrac{e^x}{1+e^x}</script><script type="math/tex; mode=display">p(y_i=0|x_i)=\dfrac{1}{1+e^x}</script><script type="math/tex; mode=display">ln\dfrac{p(y_i=1|x_i)}{p(y_i=0|x_i)}=lne^x=x=w_0+w_1x_1+w_2x_2+...+w_kx_k</script><p>求代价函数最小值，等于似然函数最大值，最终待见函数如下</p>
 <script type="math/tex; mode=display">J(w)=-Ln(\theta)=\sum_{i=1}^ny_i(w^Tx_i)-ln(1+e^{w^Tx_i})</script><p>采用梯度下降法来求解最小值。下图为几个算法求最小值的算法比价。<br><img src="\picture\blog-long_valley-resize.gif" alt="image">  </p>
 <h4 id="梯度下降算法求解"><a href="#梯度下降算法求解" class="headerlink" title="梯度下降算法求解"></a>梯度下降算法求解</h4><p>初始定义k=0，对$J(w)$求导,不断更新$w_k$直到收敛，计算精度为$\epsilon$两次代价函数小于该精度则为收敛：<br>k=0,1,2…k 循环计算梯度，并更新系数$w_k$</p>
-<script type="math/tex; mode=display">\dfrac {\partial J(w)}{\partial w_k}=\sum_{i=1}^{n}x_i^ky_i-\dfrac {x_i^ke^{w^Tx_i}}{1+e^{w^Tx_i}}</script><script type="math/tex; mode=display">w_k^{t+1}=w_k^t-\alpha \dfrac {\partial J(w)}{\partial w_k}</script><script type="math/tex; mode=display">\dfrac {\partial J(w)}{\partial w}=\sum_{i=1}^{n}x_iy_i-\dfrac {x_ie^{w^Tx_i}}{1+e^{w^Tx_i}}</script><script type="math/tex; mode=display">w^{t+1}=w^t-\alpha \dfrac {\partial J(w)}{\partial w}</script><p>计算$J(w+1)$，比较$||J(w+1)-J(w)||&lt;\epsilon$停止迭代，否则令k=k+1，继续循环。</p>
+<script type="math/tex; mode=display">\dfrac {\partial J(w)}{\partial w_k}=\sum_{i=1}^{n}x_i^ky_i-\dfrac {x_i^ke^{w^Tx_i}}{1+e^{w^Tx_i}}</script><script type="math/tex; mode=display">w_k^{t+1}=w_k^t-\alpha \dfrac {\partial J(w)}{\partial w_k}</script><script type="math/tex; mode=display">\dfrac {\partial J(w)}{\partial w}=\sum_{i=1}^{n}x_iy_i-\dfrac {x_ie^{w^Tx_i}}{1+e^{w^Tx_i}}</script><script type="math/tex; mode=display">w^{t+1}=w^t-\alpha \dfrac {\partial J(w)}{\partial w}</script><p>计算$J(w+1)$，比较$||J(w+1)-J(w)||&lt;\epsilon$停止迭代，否则令k=k+1，继续循环。<br>[参考文献]<br><a href="https://blog.csdn.net/zouxy09/article/details/20319673" target="_blank" rel="noopener">机器学习算法与Python实践</a></p>
 
       
     </div>
