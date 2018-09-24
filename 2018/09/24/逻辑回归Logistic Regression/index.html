@@ -83,11 +83,11 @@
 <meta name="keywords" content="逻辑回归">
 <meta property="og:type" content="article">
 <meta property="og:title" content="逻辑回归（Logistic Regression）">
-<meta property="og:url" content="http://yoursite.com/2018/09/24/逻辑回归(Logistic Regression)/index.html">
+<meta property="og:url" content="http://yoursite.com/2018/09/24/逻辑回归Logistic Regression/index.html">
 <meta property="og:site_name" content="ZYYZ">
 <meta property="og:description" content="逻辑回归逻辑回归VS线性回归逻辑回归不是回归（线性回归是利用数理统计中回归分析，来确定两种或两种以上变量间相互依赖的定量关系的一种统计分析方法），而是二分类器，分类结果y对影响因素x_i之间的一种多变量分析方法，判断多个变量对于结果的影响。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-09-24T05:48:23.179Z">
+<meta property="og:updated_time" content="2018-09-24T05:51:12.490Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="逻辑回归（Logistic Regression）">
 <meta name="twitter:description" content="逻辑回归逻辑回归VS线性回归逻辑回归不是回归（线性回归是利用数理统计中回归分析，来确定两种或两种以上变量间相互依赖的定量关系的一种统计分析方法），而是二分类器，分类结果y对影响因素x_i之间的一种多变量分析方法，判断多个变量对于结果的影响。">
@@ -120,7 +120,7 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2018/09/24/逻辑回归(Logistic Regression)/"/>
+  <link rel="canonical" href="http://yoursite.com/2018/09/24/逻辑回归Logistic Regression/"/>
 
 
 
@@ -263,7 +263,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/24/逻辑回归(Logistic Regression)/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/24/逻辑回归Logistic Regression/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="ZYYZ">
@@ -292,7 +292,7 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-09-24T13:48:39+08:00">
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-09-24T13:51:31+08:00">
                 2018-09-24
               </time>
             
@@ -352,9 +352,11 @@
       
 
       
-        <h2 id="逻辑回归"><a href="#逻辑回归" class="headerlink" title="逻辑回归"></a>逻辑回归</h2><h4 id="逻辑回归VS线性回归"><a href="#逻辑回归VS线性回归" class="headerlink" title="逻辑回归VS线性回归"></a>逻辑回归VS线性回归</h4><p>逻辑回归不是回归（线性回归是利用数理统计中回归分析，来确定两种或两种以上变量间相互依赖的定量关系的一种统计分析方法），而是二分类器，分类结果<script type="math/tex">y</script>对影响因素<script type="math/tex">x_i</script>之间的一种多变量分析方法，判断多个变量对于结果的影响。<br><a id="more"></a><br>`$<br>y=g(x)  </p>
-<p>x=w_0+w_1x_1+w_2x_2+…+w_kx_k<br>$`  </p>
-<script type="math/tex; mode=display">x_1,x_2...x_k$$是每条数据的$$k$$维特征。  
+        <h2 id="逻辑回归"><a href="#逻辑回归" class="headerlink" title="逻辑回归"></a>逻辑回归</h2><h4 id="逻辑回归VS线性回归"><a href="#逻辑回归VS线性回归" class="headerlink" title="逻辑回归VS线性回归"></a>逻辑回归VS线性回归</h4><p>逻辑回归不是回归（线性回归是利用数理统计中回归分析，来确定两种或两种以上变量间相互依赖的定量关系的一种统计分析方法），而是二分类器，分类结果<script type="math/tex">y</script>对影响因素<script type="math/tex">x_i</script>之间的一种多变量分析方法，判断多个变量对于结果的影响。<br><a id="more"></a>  </p>
+<script type="math/tex; mode=display">
+y=g(x)  
+
+x=w_0+w_1x_1+w_2x_2+...+w_kx_k</script><script type="math/tex; mode=display">x_1,x_2...x_k$$是每条数据的$$k$$维特征。  
 直接将$$x$$作为模型就是线性回归了，但是引入了一个如下公式的函数，该函数也叫激励函数，将线性的函数转换为非线性，实现特征到分类结果的映射，实现逻辑回归。线性回归的直线你和所有数据的点，逻辑回归则用直线作为不同类别的分界线。逻辑回归也可以理解成被激励函数归一化后的线性回归。  
 ![image](\picture\20140302234224515.png)  
 
