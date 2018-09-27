@@ -90,7 +90,7 @@
 <meta property="og:image" content="http://yoursite.com/picture/20140302234224515.png">
 <meta property="og:image" content="http://yoursite.com/picture/600px-Logistic-curve.svg.png">
 <meta property="og:image" content="http://yoursite.com/picture/blog-long_valley-resize.gif">
-<meta property="og:updated_time" content="2018-09-27T08:14:25.358Z">
+<meta property="og:updated_time" content="2018-09-27T08:21:33.999Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="逻辑回归（Logistic Regression）">
 <meta name="twitter:description" content="逻辑回归逻辑回归VS线性回归逻辑回归不是回归（线性回归是利用数理统计中回归分析，来确定两种或两种以上变量间相互依赖的定量关系的一种统计分析方法），而是二分类器，分类结果y对影响因素x_i之间的一种多变量分析方法，判断多个变量对于结果的影响。">
@@ -366,9 +366,10 @@
 <script type="math/tex; mode=display">L(w)=\prod p(y_i=1|x_i)^{y_i}(1-p(y_i=1|x_i))^{1-y_i}</script><script type="math/tex; mode=display">l(w)=ln(L(w))=ln(\prod p(y_i=1|x_i)^{y_i}(1-p(y_i=1|x_i))^{1-y_i})</script><script type="math/tex; mode=display">=\sum_{i=1}^ny_ilnp(y_i=1|x_i)+(1-y_i)lnp(y_i=0|x_i)</script><script type="math/tex; mode=display">=\sum_{i=1}^ny_iln\dfrac{p(y_i=1|x_i)}{p(y_i=0|x_i)}+\sum_{i=1}^nlnp(y_i=0|x_i)</script><script type="math/tex; mode=display">=\sum_{i=1}^ny_i(w_0+w_1x_1+...+w_kx_k)+\sum_{i=1}^nlnp(y_i=0|x_i)</script><script type="math/tex; mode=display">=\sum_{i=1}^ny_i(w^Tx_i)-ln(1+e^{w^Tx_i})</script><p>注意这个公式的由来：</p>
 <script type="math/tex; mode=display">p(y_i=1|x_i)=\dfrac{e^x}{1+e^x}=h_0(x)</script><script type="math/tex; mode=display">p(y_i=0|x_i)=\dfrac{1}{1+e^x}</script><script type="math/tex; mode=display">ln\dfrac{p(y_i=1|x_i)}{p(y_i=0|x_i)}=lne^x=x=w_0+w_1x_1+w_2x_2+...+w_kx_k</script><p>求最大似然估计，就是求得$l(w)$最大值是$w$的解，对$l(w)$对$w$求导，让导数得零，但是这给式子无法求解，所以使用梯度下降法求解，前面添加了负系数，则$J(w)$取最小值时的$w$为最大似然估计的参数。</p>
 <script type="math/tex; mode=display">J(w)=-l(w)=-(\sum_{i=1}^ny_i(w^Tx_i)-ln(1+e^{w^Tx_i}))</script><p>采用梯度下降法来求解最小值。下图为几个算法求最小值的算法比价。<br><img src="\picture\blog-long_valley-resize.gif" alt="image">  </p>
-<h4 id="梯度下降算法求解"><a href="#梯度下降算法求解" class="headerlink" title="梯度下降算法求解"></a>梯度下降算法求解</h4><p>初始定义j=0，对$J(w)$求导,不断更新$w^j$直到收敛，计算精度为$\epsilon$两次代价函数小于该精度则为收敛：<br>j=0,1,2…k 循环计算梯度，并更新系数$w^j$:</p>
+<h4 id="梯度下降算法求解"><a href="#梯度下降算法求解" class="headerlink" title="梯度下降算法求解"></a>梯度下降算法求解</h4><p>初始定义j=0，对$J(w)$求导,不断更新$w_j$直到收敛，计算精度为$\epsilon$两次代价函数小于该精度则为收敛：<br>j=0,1,2…k 循环计算梯度，并更新系数$w_j$:</p>
 <script type="math/tex; mode=display">w_j=w_j-\alpha \dfrac {\partial J(w)}{\partial w_j}</script><script type="math/tex; mode=display">\dfrac {\partial J(w)}{\partial w_j}=-(\sum_{i=1}^{n}x_iy_i-\dfrac {x_ie^{w
-_jx_i}}{1+e^{w_jx_i}})=-(\sum_{i=1}^{n}(y_i-h_0(x_i))x_{ij})</script><p>其中$j$是没条样本的特征数0-j，$i$是样本数1-n。<br>[参考文献]<br><a href="https://blog.csdn.net/zouxy09/article/details/20319673" target="_blank" rel="noopener">机器学习算法与Python实践</a><br><a href="https://blog.csdn.net/ligang_csdn/article/details/53838743" target="_blank" rel="noopener">Logistic回归总结</a></p>
+_jx_i}}{1+e^{w_jx_i}})=-(\sum_{i=1}^{n}(y_i-h_0(x_i))x_{ij})</script><p>其中$j$是没条样本的特征数0-j，$i$是样本数1-n。  </p>
+<h3 id="梯度下降是得到的-w-是一组向量，该向量的方向是代价函数下降最快的方向，从而找到最低点，所对应的-w-就是所求的参数。"><a href="#梯度下降是得到的-w-是一组向量，该向量的方向是代价函数下降最快的方向，从而找到最低点，所对应的-w-就是所求的参数。" class="headerlink" title="梯度下降是得到的$w$是一组向量，该向量的方向是代价函数下降最快的方向，从而找到最低点，所对应的$w$就是所求的参数。"></a>梯度下降是得到的$w$是一组向量，该向量的方向是代价函数下降最快的方向，从而找到最低点，所对应的$w$就是所求的参数。</h3><p>[参考文献]<br><a href="https://blog.csdn.net/zouxy09/article/details/20319673" target="_blank" rel="noopener">机器学习算法与Python实践</a><br><a href="https://blog.csdn.net/ligang_csdn/article/details/53838743" target="_blank" rel="noopener">Logistic回归总结</a><br><a href="https://www.cnblogs.com/pinard/p/5970503.html" target="_blank" rel="noopener">梯度下降（GradientDescent）小结</a></p>
 
       
     </div>
@@ -563,7 +564,7 @@ _jx_i}}{1+e^{w_jx_i}})=-(\sum_{i=1}^{n}(y_i-h_0(x_i))x_{ij})</script><p>其中$j
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#逻辑回归"><span class="nav-number">1.</span> <span class="nav-text">逻辑回归</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#逻辑回归VS线性回归"><span class="nav-number">1.0.1.</span> <span class="nav-text">逻辑回归VS线性回归</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#逻辑回归函数"><span class="nav-number">1.0.2.</span> <span class="nav-text">逻辑回归函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#代价函数"><span class="nav-number">1.0.3.</span> <span class="nav-text">代价函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#梯度下降算法求解"><span class="nav-number">1.0.4.</span> <span class="nav-text">梯度下降算法求解</span></a></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#逻辑回归"><span class="nav-number">1.</span> <span class="nav-text">逻辑回归</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#逻辑回归VS线性回归"><span class="nav-number">1.0.1.</span> <span class="nav-text">逻辑回归VS线性回归</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#逻辑回归函数"><span class="nav-number">1.0.2.</span> <span class="nav-text">逻辑回归函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#代价函数"><span class="nav-number">1.0.3.</span> <span class="nav-text">代价函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#梯度下降算法求解"><span class="nav-number">1.0.4.</span> <span class="nav-text">梯度下降算法求解</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#梯度下降是得到的-w-是一组向量，该向量的方向是代价函数下降最快的方向，从而找到最低点，所对应的-w-就是所求的参数。"><span class="nav-number">1.1.</span> <span class="nav-text">梯度下降是得到的$w$是一组向量，该向量的方向是代价函数下降最快的方向，从而找到最低点，所对应的$w$就是所求的参数。</span></a></li></ol></li></ol></div>
             
 
           </div>
