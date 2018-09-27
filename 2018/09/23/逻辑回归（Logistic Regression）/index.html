@@ -83,14 +83,14 @@
 <meta name="keywords" content="逻辑回归">
 <meta property="og:type" content="article">
 <meta property="og:title" content="逻辑回归（Logistic Regression）">
-<meta property="og:url" content="http://yoursite.com/2018/09/27/逻辑回归（Logistic Regression）/index.html">
+<meta property="og:url" content="http://yoursite.com/2018/09/23/逻辑回归（Logistic Regression）/index.html">
 <meta property="og:site_name" content="ZYYZ">
 <meta property="og:description" content="逻辑回归逻辑回归VS线性回归逻辑回归不是回归（线性回归是利用数理统计中回归分析，来确定两种或两种以上变量间相互依赖的定量关系的一种统计分析方法），而是二分类器，分类结果y对影响因素x_i之间的一种多变量分析方法，判断多个变量对于结果的影响。">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/picture/20140302234224515.png">
 <meta property="og:image" content="http://yoursite.com/picture/600px-Logistic-curve.svg.png">
 <meta property="og:image" content="http://yoursite.com/picture/blog-long_valley-resize.gif">
-<meta property="og:updated_time" content="2018-09-27T08:11:08.888Z">
+<meta property="og:updated_time" content="2018-09-27T08:14:25.358Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="逻辑回归（Logistic Regression）">
 <meta name="twitter:description" content="逻辑回归逻辑回归VS线性回归逻辑回归不是回归（线性回归是利用数理统计中回归分析，来确定两种或两种以上变量间相互依赖的定量关系的一种统计分析方法），而是二分类器，分类结果y对影响因素x_i之间的一种多变量分析方法，判断多个变量对于结果的影响。">
@@ -124,7 +124,7 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2018/09/27/逻辑回归（Logistic Regression）/"/>
+  <link rel="canonical" href="http://yoursite.com/2018/09/23/逻辑回归（Logistic Regression）/"/>
 
 
 
@@ -267,7 +267,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/27/逻辑回归（Logistic Regression）/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/23/逻辑回归（Logistic Regression）/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="ZYYZ">
@@ -296,8 +296,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-09-27T16:11:17+08:00">
-                2018-09-27
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-09-23T16:48:00+08:00">
+                2018-09-23
               </time>
             
 
@@ -367,8 +367,8 @@
 <script type="math/tex; mode=display">p(y_i=1|x_i)=\dfrac{e^x}{1+e^x}=h_0(x)</script><script type="math/tex; mode=display">p(y_i=0|x_i)=\dfrac{1}{1+e^x}</script><script type="math/tex; mode=display">ln\dfrac{p(y_i=1|x_i)}{p(y_i=0|x_i)}=lne^x=x=w_0+w_1x_1+w_2x_2+...+w_kx_k</script><p>求最大似然估计，就是求得$l(w)$最大值是$w$的解，对$l(w)$对$w$求导，让导数得零，但是这给式子无法求解，所以使用梯度下降法求解，前面添加了负系数，则$J(w)$取最小值时的$w$为最大似然估计的参数。</p>
 <script type="math/tex; mode=display">J(w)=-l(w)=-(\sum_{i=1}^ny_i(w^Tx_i)-ln(1+e^{w^Tx_i}))</script><p>采用梯度下降法来求解最小值。下图为几个算法求最小值的算法比价。<br><img src="\picture\blog-long_valley-resize.gif" alt="image">  </p>
 <h4 id="梯度下降算法求解"><a href="#梯度下降算法求解" class="headerlink" title="梯度下降算法求解"></a>梯度下降算法求解</h4><p>初始定义j=0，对$J(w)$求导,不断更新$w^j$直到收敛，计算精度为$\epsilon$两次代价函数小于该精度则为收敛：<br>j=0,1,2…k 循环计算梯度，并更新系数$w^j$:</p>
-<script type="math/tex; mode=display">w^j=w^j-\alpha \dfrac {\partial J(w)}{\partial w^j}</script><script type="math/tex; mode=display">\dfrac {\partial J(w)}{\partial w_j}=-(\sum_{i=1}^{n}x_iy_i-\dfrac {x_ie^{w
-_jx_i}}{1+e^{w_jx_i}})=-(\sum_{i=1}^{n}(y_i-h_0(x))x_i^j)</script><p>其中$j$是没条样本的特征数$0-j$，$i$是样本数$1-n$。<br>[参考文献]<br><a href="https://blog.csdn.net/zouxy09/article/details/20319673" target="_blank" rel="noopener">机器学习算法与Python实践</a><br><a href="https://blog.csdn.net/ligang_csdn/article/details/53838743" target="_blank" rel="noopener">Logistic回归总结</a></p>
+<script type="math/tex; mode=display">w_j=w_j-\alpha \dfrac {\partial J(w)}{\partial w_j}</script><script type="math/tex; mode=display">\dfrac {\partial J(w)}{\partial w_j}=-(\sum_{i=1}^{n}x_iy_i-\dfrac {x_ie^{w
+_jx_i}}{1+e^{w_jx_i}})=-(\sum_{i=1}^{n}(y_i-h_0(x_i))x_{ij})</script><p>其中$j$是没条样本的特征数0-j，$i$是样本数1-n。<br>[参考文献]<br><a href="https://blog.csdn.net/zouxy09/article/details/20319673" target="_blank" rel="noopener">机器学习算法与Python实践</a><br><a href="https://blog.csdn.net/ligang_csdn/article/details/53838743" target="_blank" rel="noopener">Logistic回归总结</a></p>
 
       
     </div>
@@ -399,8 +399,8 @@ _jx_i}}{1+e^{w_jx_i}})=-(\sum_{i=1}^{n}(y_i-h_0(x))x_i^j)</script><p>其中$j$�
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/09/24/中秋节/" rel="next" title="中秋节">
-                <i class="fa fa-chevron-left"></i> 中秋节
+              <a href="/2018/05/18/卷积神经网络/" rel="next" title="卷积神经网络">
+                <i class="fa fa-chevron-left"></i> 卷积神经网络
               </a>
             
           </div>
@@ -408,6 +408,10 @@ _jx_i}}{1+e^{w_jx_i}})=-(\sum_{i=1}^{n}(y_i-h_0(x))x_i^j)</script><p>其中$j$�
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/09/24/hexo显示公式/" rel="prev" title="hexo显示公式">
+                hexo显示公式 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
