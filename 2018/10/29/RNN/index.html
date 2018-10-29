@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="deep learning," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Q：RNN的循环次数用什么来衡量？是否是step数？每次循环就相当于一个是时间序列，每个循环输入的input的x是否是所有的x？RNN类似于MLP原始的感知机，只是每个时间序列中的隐藏层的参数总是共享的。   1 神经网络(Neural Network)神经网络的结构如下入图所示，想要了解RNN网络NN是基础，RNN也是保持着这个结构，有输入层、隐藏层和输出层。">
+<meta name="keywords" content="deep learning">
+<meta property="og:type" content="article">
+<meta property="og:title" content="循环神经网络（Recurrent Neural Network）">
+<meta property="og:url" content="http://yoursite.com/2018/10/29/RNN/index.html">
+<meta property="og:site_name" content="ZYYZ">
+<meta property="og:description" content="Q：RNN的循环次数用什么来衡量？是否是step数？每次循环就相当于一个是时间序列，每个循环输入的input的x是否是所有的x？RNN类似于MLP原始的感知机，只是每个时间序列中的隐藏层的参数总是共享的。   1 神经网络(Neural Network)神经网络的结构如下入图所示，想要了解RNN网络NN是基础，RNN也是保持着这个结构，有输入层、隐藏层和输出层。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/picture/TIM%E6%88%AA%E5%9B%BE20181018173536.png">
+<meta property="og:image" content="http://yoursite.com/picture/TIM%E6%88%AA%E5%9B%BE20181018174434.png">
+<meta property="og:image" content="http://yoursite.com/picture/TIM%E6%88%AA%E5%9B%BE20181018173604.png">
+<meta property="og:image" content="http://yoursite.com/picture/TIM%E6%88%AA%E5%9B%BE20181018182543.png">
+<meta property="og:image" content="http://yoursite.com/picture/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20181017180449.png">
+<meta property="og:image" content="http://yoursite.com/picture/TIM%E6%88%AA%E5%9B%BE20181018185026.png">
+<meta property="og:image" content="http://yoursite.com/picture/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20181017180743.png">
+<meta property="og:image" content="http://yoursite.com/picture/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20181019133112.png">
+<meta property="og:image" content="http://yoursite.com/picture/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20181019150614.png">
+<meta property="og:image" content="http://yoursite.com/picture/TIM%E6%88%AA%E5%9B%BE20181018190721.png">
+<meta property="og:image" content="http://yoursite.com/picture/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20181029144449.png">
+<meta property="og:updated_time" content="2018-10-29T09:00:08.021Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="循环神经网络（Recurrent Neural Network）">
+<meta name="twitter:description" content="Q：RNN的循环次数用什么来衡量？是否是step数？每次循环就相当于一个是时间序列，每个循环输入的input的x是否是所有的x？RNN类似于MLP原始的感知机，只是每个时间序列中的隐藏层的参数总是共享的。   1 神经网络(Neural Network)神经网络的结构如下入图所示，想要了解RNN网络NN是基础，RNN也是保持着这个结构，有输入层、隐藏层和输出层。">
+<meta name="twitter:image" content="http://yoursite.com/picture/TIM%E6%88%AA%E5%9B%BE20181018173536.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"always","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/10/29/RNN/"/>
+
+
+
+
+
+  <title>循环神经网络（Recurrent Neural Network） | ZYYZ</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ZYYZ</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">hello</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/10/29/RNN/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="ZYYZ">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/picture/image.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ZYYZ">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">循环神经网络（Recurrent Neural Network）</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-10-29T16:55:00+08:00">
+                2018-10-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/深度学习/" itemprop="url" rel="index">
+                    <span itemprop="name">深度学习</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Q：<br>RNN的循环次数用什么来衡量？是否是step数？<br>每次循环就相当于一个是时间序列，每个循环输入的input的x是否是所有的x？<br>RNN类似于MLP原始的感知机，只是每个时间序列中的隐藏层的参数总是共享的。  </p>
+<h4 id="1-神经网络-Neural-Network"><a href="#1-神经网络-Neural-Network" class="headerlink" title="1 神经网络(Neural Network)"></a>1 神经网络(Neural Network)</h4><p>神经网络的结构如下入图所示，想要了解RNN网络NN是基础，RNN也是保持着这个结构，有输入层、隐藏层和输出层。<br><a id="more"></a><br><img src="\picture\TIM%E6%88%AA%E5%9B%BE20181018173536.png" alt="image"></p>
+<h5 id="1-1-前向传播"><a href="#1-1-前向传播" class="headerlink" title="1.1 前向传播"></a>1.1 前向传播</h5><p>可以只考虑一层隐含层的。其中i表示输入层神经节点个数，h表示隐藏层，K表示输出层，$H_L$表示隐藏层节点数。所以参数$w_{ih},w_{hk}$分别表示输入层到隐藏层参数，隐藏层到输出层参数。$\theta_h$表示激励函数。<br><img src="\picture\TIM%E6%88%AA%E5%9B%BE20181018174434.png" alt="image"><br><img src="\picture\TIM%E6%88%AA%E5%9B%BE20181018173604.png" alt="image">  </p>
+<h4 id="2-RNN-Recurrent-Neural-Network"><a href="#2-RNN-Recurrent-Neural-Network" class="headerlink" title="2 RNN(Recurrent Neural Network)"></a>2 RNN(Recurrent Neural Network)</h4><h5 id="2-1-RNN前向传播"><a href="#2-1-RNN前向传播" class="headerlink" title="2.1 RNN前向传播"></a>2.1 RNN前向传播</h5><p>RNN不同的是隐藏层中的每个神经元，不仅和input的信息有关，也和上个时间序列（也就是上一个step中隐藏层会有一个输出，也就是隐藏层到隐藏层的参数，所以从RNN和NN网络结构图来看，RNN的隐藏层中会有相互的连线。这个是NN没有的，NN的参数只有输入层到隐藏层，隐藏层到输出层。）<br><img src="\picture\TIM%E6%88%AA%E5%9B%BE20181018182543.png" alt="image"><br>通过下图的公式对比NN，可以看到多出了符号右上角的t的角标，这给用来表示时间序列。下图第二个公式对应上面第二个公式，可以看出后面多出来一项其中参数$w_{h^{‘}h}$表示隐藏层之间传递的参数。  </p>
+<h5 id="所以可以看出RNN其实和NN并无太大差别，从公式看来值是增加了一项隐藏层中间传递的参数，这一点需要在一个时间序列中才能看出来，所以说RNN和时间序列有关。"><a href="#所以可以看出RNN其实和NN并无太大差别，从公式看来值是增加了一项隐藏层中间传递的参数，这一点需要在一个时间序列中才能看出来，所以说RNN和时间序列有关。" class="headerlink" title="所以可以看出RNN其实和NN并无太大差别，从公式看来值是增加了一项隐藏层中间传递的参数，这一点需要在一个时间序列中才能看出来，所以说RNN和时间序列有关。"></a>所以可以看出RNN其实和NN并无太大差别，从公式看来值是增加了一项隐藏层中间传递的参数，这一点需要在一个时间序列中才能看出来，所以说RNN和时间序列有关。</h5><p><img src="\picture\%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20181017180449.png" alt="image">   </p>
+<h5 id="RNN网络随着时间进行展开的"><a href="#RNN网络随着时间进行展开的" class="headerlink" title="RNN网络随着时间进行展开的"></a>RNN网络随着时间进行展开的</h5><p>一个时间序列表示训练中的一个step，这个图忽略了神经网络的实现细节，直接表示了各个参数的传递方向，$w_1,w_2,w_3$分别对应上面的公式中的参数$w_{ih},w_{h^{‘}h},w_{hk}$。<br><img src="\picture\TIM%E6%88%AA%E5%9B%BE20181018185026.png" alt="image"></p>
+<h5 id="2-2-RNN反向传播"><a href="#2-2-RNN反向传播" class="headerlink" title="2.2 RNN反向传播"></a>2.2 RNN反向传播</h5><p>这里主要给出的是计算隐藏层的累积残差的公式，因为输出层和经典的NN是一回事，可以看到第一个公式括号中的两个部分，一个是接收当前时间输出层传回的残差，第二个是接收下一时间隐藏层传回的残差，看着上面的图其实非常好理解。<br><img src="\picture\%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20181017180743.png" alt="image">  </p>
+<h4 id="3-LSTM-Long-short-Term-Memory"><a href="#3-LSTM-Long-short-Term-Memory" class="headerlink" title="3 LSTM(Long-short Term Memory)"></a>3 LSTM(Long-short Term Memory)</h4><h5 id="3-1-RNN梯度消失问题"><a href="#3-1-RNN梯度消失问题" class="headerlink" title="3.1 RNN梯度消失问题"></a>3.1 RNN梯度消失问题</h5><p><img src="\picture\%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20181019133112.png" alt="image">  </p>
+<p>由于RNN在随时间传播的过程中会遇到一个梯度消失的问题，如上图所示，阴影表示随时间序列的推进对第一时刻输入的敏感度（阴影越深，灵敏度越大），也就是说当前时间序列只对离他较近的输入敏感，对于之前输入的信息发生遗忘，简单讲就相当于人忘了过去的事。<br>为了解决这个问题所以就有了LSTM，就是为了记住更长时间的信息，LSTM把RNN中间的隐藏层更加复杂化叫做block，block包含一个或多个自连接记忆单元cell，和三个乘法单元分别为input、output and forget gates，输入门，输出门和遗忘门。  </p>
+<h5 id="3-2-门对保留梯度信息的影响"><a href="#3-2-门对保留梯度信息的影响" class="headerlink" title="3.2 门对保留梯度信息的影响"></a>3.2 门对保留梯度信息的影响</h5><p><img src="\picture\%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20181019150614.png" alt="image">   </p>
+<p>LSTM保留梯度信息情况如上图所示。节点的阴影表示对time1时刻输入信息的敏感程度，颜色越深越敏感，白色则完全不敏感。隐藏层节点的上下左三个方向上的标记分别表示，输出门，输入门，遗忘门。对于所有门打开的标记是“O”，关闭的标记是“—”。从上面的图可以看出，T1输入门打开输入信息，只要遗忘门打开，T1的信息就会在各个时刻被记住，输出层的灵敏度通过输出门的通断来决定，打开T4时刻的输出门，该输出也会对T1时刻的信息敏感，T5时刻关闭输出门，但由于遗忘门始终是打开的状态，所以并不影响T1的信息在隐藏层之间传输，即对隐藏层cell单元不会有影响。直到遗忘门关闭，忘记T1时刻的信息。    </p>
+<h5 id="3-3-LSTM记忆block"><a href="#3-3-LSTM记忆block" class="headerlink" title="3.3 LSTM记忆block"></a>3.3 LSTM记忆block</h5><p><img src="\picture\TIM%E6%88%AA%E5%9B%BE20181018190721.png" alt="image"><br>LSTM记忆block，三个非线性单元门，对块内块外的信息进行收集激活，通过乘法运算（也就是小黑圈）控制单元激活。输入和输出门为输入和输出信息做乘法（输入就是输入层的输入，输出是输出门的输出，可以是上一个神经元的也可以是当前神经元的，具体可以参考下图）所有激活功能的外界输入都来自输入层和输出门和cell乘法（也就是上面小黑圈）的输出。遗忘门和cell之前状态相乘。虚线表示cell到门的加权连线，实线都是未加权（也可以表示权重为1）。<br><img src="\picture\%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20181029144449.png" alt="image"><br>上图表示一个LSTM网络，这个网络包含四个输入单元，包含两个单cell的LSTM的block的隐藏层，和五个输出单元，并没有画出所有的连线。请注意，每个块有四个输入但只有一个输出。</p>
+<h4 id="【参考文献】"><a href="#【参考文献】" class="headerlink" title="【参考文献】"></a>【参考文献】</h4><p><a href="https://blog.csdn.net/Dark_Scope/article/details/47056361?utm_source=blogkpcl9" target="_blank" rel="noopener">RNN以及LSTM的介绍和公式梳理</a><br><a href="https://www.cs.toronto.edu/~graves/phd.pdf" target="_blank" rel="noopener">Supervised Sequence Labelling with Recurrent Neural Networks.Alex Graves</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/deep-learning/" rel="tag"># deep learning</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/09/24/中秋节/" rel="next" title="中秋节">
+                <i class="fa fa-chevron-left"></i> 中秋节
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/picture/image.png"
+                alt="ZYYZ" />
+            
+              <p class="site-author-name" itemprop="name">ZYYZ</p>
+              <p class="site-description motion-element" itemprop="description">一瓶子不满，半瓶子晃悠。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/zhoujingyi110" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:363663584@qq.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-神经网络-Neural-Network"><span class="nav-number">1.</span> <span class="nav-text">1 神经网络(Neural Network)</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-1-前向传播"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 前向传播</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-RNN-Recurrent-Neural-Network"><span class="nav-number">2.</span> <span class="nav-text">2 RNN(Recurrent Neural Network)</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#2-1-RNN前向传播"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 RNN前向传播</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#所以可以看出RNN其实和NN并无太大差别，从公式看来值是增加了一项隐藏层中间传递的参数，这一点需要在一个时间序列中才能看出来，所以说RNN和时间序列有关。"><span class="nav-number">2.2.</span> <span class="nav-text">所以可以看出RNN其实和NN并无太大差别，从公式看来值是增加了一项隐藏层中间传递的参数，这一点需要在一个时间序列中才能看出来，所以说RNN和时间序列有关。</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#RNN网络随着时间进行展开的"><span class="nav-number">2.3.</span> <span class="nav-text">RNN网络随着时间进行展开的</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-2-RNN反向传播"><span class="nav-number">2.4.</span> <span class="nav-text">2.2 RNN反向传播</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-LSTM-Long-short-Term-Memory"><span class="nav-number">3.</span> <span class="nav-text">3 LSTM(Long-short Term Memory)</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#3-1-RNN梯度消失问题"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 RNN梯度消失问题</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-2-门对保留梯度信息的影响"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 门对保留梯度信息的影响</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-3-LSTM记忆block"><span class="nav-number">3.3.</span> <span class="nav-text">3.3 LSTM记忆block</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#【参考文献】"><span class="nav-number">4.</span> <span class="nav-text">【参考文献】</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ZYYZ</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>
