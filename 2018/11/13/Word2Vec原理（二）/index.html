@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="转载自word2vec原理(二) 基于Hierarchical Softmax的模型在word2vec原理(一)CBOW与Skip-Gram模型基础中，我们讲到了使用神经网络的方法来得到词向量语言模型的原理和一些问题，现在我们开始关注word2vec的语言模型如何改进传统的神经网络的方法。由于word2vec有两种改进方法，一种是基于Hierarchical Softmax的，另一种是基于Nega">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ZYYZ">
+<meta property="og:url" content="http://yoursite.com/2018/11/13/Word2Vec原理（二）/index.html">
+<meta property="og:site_name" content="ZYYZ">
+<meta property="og:description" content="转载自word2vec原理(二) 基于Hierarchical Softmax的模型在word2vec原理(一)CBOW与Skip-Gram模型基础中，我们讲到了使用神经网络的方法来得到词向量语言模型的原理和一些问题，现在我们开始关注word2vec的语言模型如何改进传统的神经网络的方法。由于word2vec有两种改进方法，一种是基于Hierarchical Softmax的，另一种是基于Nega">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="d:/pictuer/1042406-20170727105326843-18935623.png">
+<meta property="og:image" content="d:/pictuer/1042406-20170727105752968-819608237.png">
+<meta property="og:updated_time" content="2018-11-01T10:14:45.422Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ZYYZ">
+<meta name="twitter:description" content="转载自word2vec原理(二) 基于Hierarchical Softmax的模型在word2vec原理(一)CBOW与Skip-Gram模型基础中，我们讲到了使用神经网络的方法来得到词向量语言模型的原理和一些问题，现在我们开始关注word2vec的语言模型如何改进传统的神经网络的方法。由于word2vec有两种改进方法，一种是基于Hierarchical Softmax的，另一种是基于Nega">
+<meta name="twitter:image" content="d:/pictuer/1042406-20170727105326843-18935623.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"always","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/11/13/Word2Vec原理（二）/"/>
+
+
+
+
+
+  <title> | ZYYZ</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ZYYZ</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">hello</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/13/Word2Vec原理（二）/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="ZYYZ">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/picture/image.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ZYYZ">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline"></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-13T14:55:37+08:00">
+                2018-11-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><a href="https://www.cnblogs.com/pinard/p/7243513.html" target="_blank" rel="noopener">转载自word2vec原理(二) 基于Hierarchical Softmax的模型</a><br>在word2vec原理(一)CBOW与Skip-Gram模型基础中，我们讲到了使用神经网络的方法来得到词向量语言模型的原理和一些问题，现在我们开始关注word2vec的语言模型如何改进传统的神经网络的方法。由于word2vec有两种改进方法，一种是基于Hierarchical Softmax的，另一种是基于Negative Sampling的。本文关注于基于Hierarchical Softmax的改进方法，在下一篇讨论基于Negative Sampling的改进方法。  </p>
+<h4 id="1-基于Hierarchical-Softmax的模型概述"><a href="#1-基于Hierarchical-Softmax的模型概述" class="headerlink" title="1 基于Hierarchical Softmax的模型概述"></a>1 基于Hierarchical Softmax的模型概述</h4><p>我们先回顾下传统的神经网络词向量语言模型，里面一般有三层，输入层（词向量），隐藏层和输出层（softmax层）。里面最大的问题在于从隐藏层到输出的softmax层的计算量很大，因为要计算所有词的softmax概率，再去找概率最大的值。这个模型如下图所示。其中V是词汇表的大小。<br><img src="D:/pictuer/1042406-20170727105326843-18935623.png" alt="image"><br>word2vec对这个模型做了改进，首先，对于从输入层到隐藏层的映射，没有采取神经网络的线性变换加激活函数的方法，而是采用简单的对所有输入词向量求和并取平均的方法。比如输入的是三个4维词向量：(1,2,3,4),(9,6,11,8),(5,10,7,12),那么我们word2vec映射后的词向量就是(5,6,7,8)。由于这里是从多个词向量变成了一个词向量。  </p>
+<p>第二个改进就是从隐藏层到输出的softmax层这里的计算量个改进。为了避免要计算所有词的softmax概率，word2vec采样了霍夫曼树来代替从隐藏层到输出softmax层的映射。我们在上一节已经介绍了霍夫曼树的原理。如何映射呢？这里就是理解word2vec的关键所在了。  </p>
+<p>由于我们把之前所有都要计算的从输出softmax层的概率计算变成了一颗二叉霍夫曼树，那么我们的softmax概率计算只需要沿着树形结构进行就可以了。如下图所示，我们可以沿着霍夫曼树从根节点一直走到我们的叶子节点的词w2。<br><img src="D:/pictuer/1042406-20170727105752968-819608237.png" alt="image"><br>和之前的神经网络语言模型相比，我们的霍夫曼树的所有内部节点就类似之前神经网络隐藏层的神经元,其中，根节点的词向量对应我们的投影后的词向量，而所有叶子节点就类似于之前神经网络softmax输出层的神经元，叶子节点的个数就是词汇表的大小。在霍夫曼树中，隐藏层到输出层的softmax映射不是一下子完成的，而是沿着霍夫曼树一步步完成的，因此这种softmax取名为”Hierarchical Softmax”。  </p>
+<p>如何“沿着霍夫曼树一步步完成”呢？在word2vec中，我们采用了二元逻辑回归的方法，即规定沿着左子树走，那么就是负类(霍夫曼树编码1)，沿着右子树走，那么就是正类(霍夫曼树编码0)。判别正类和负类的方法是使用sigmoid函数，即：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">P(+)=\sigma&#123;(x^T_w\theta)&#125;=\frac&#123;1&#125;&#123;1+e^&#123;-x^T_w\theta&#125;&#125;</span><br><span class="line">```  </span><br><span class="line">其中`$x_w$`是当前内部节点的词向量，而`$\theta$`则是我们需要从训练样本求出的逻辑回归的模型参数。  </span><br><span class="line">使用霍夫曼树有什么好处呢？首先，由于是二叉树，之前计算量为V,现在变成了`$log_2V$`。第二，由于使用霍夫曼树是高频的词靠近树根，这样高频词需要更少的时间会被找到，这符合我们的贪心优化思想。</span><br><span class="line"></span><br><span class="line">容易理解，被划分为左子树而成为负类的概率为P(−)=1−P(+)。在某一个内部节点，要判断是沿左子树还是右子树走的标准就是看P(−),P(+)谁的概率值大。而控制P(−),P(+)谁的概率值大的因素一个是当前节点的词向量，另一个是当前节点的模型参数`$\theta$`。</span><br><span class="line"></span><br><span class="line">对于上图中的`$w_2$`，如果它是一个训练样本的输出，那么我们期望对于里面的隐藏节点n(`$w_2$`,1)的P(−)概率大，n(`$w_2$`,2)的P(−)概率大，n(`$w_2$`,3)的P(+)概率大。</span><br><span class="line"></span><br><span class="line">回到基于Hierarchical Softmax的word2vec本身，我们的目标就是找到合适的所有节点的词向量和所有内部节点`$\theta$`,使训练样本达到最大似然。那么如何达到最大似然呢？</span><br><span class="line">#### 2 基于Hierarchical Softmax的模型梯度计算  </span><br><span class="line">我们使用最大似然法来寻找所有节点的词向量和所有内部节点`$\theta$`。先拿上面的`$w_2$`例子来看，我们期望最大化下面的似然函数：  </span><br><span class="line">```math</span><br><span class="line">\prod_&#123;i=1&#125;^3P(n(w_i),i)=(1-\frac&#123;1&#125;&#123;1+e^&#123;-x^T_w\theta_1&#125;&#125;)(1-\frac&#123;1&#125;&#123;1+e^&#123;-x^T_w\theta_2&#125;&#125;)\frac&#123;1&#125;&#123;1+e^&#123;-x^T_w\theta_3&#125;&#125;</span><br></pre></td></tr></table></figure></p>
+<p>对于所有的训练样本，我们期望最大化所有样本的似然函数乘积。<br>为了便于我们后面一般化的描述，我们定义输入的词为<script type="math/tex">w</script>,其从输入层词向量求和平均后的霍夫曼树根节点词向量为<script type="math/tex">x_w</script>, 从根节点到<script type="math/tex">w</script>所在的叶子节点，包含的节点总数为<script type="math/tex">l_w</script>, <script type="math/tex">w</script>在霍夫曼树中从根节点开始，经过的第<script type="math/tex">i</script>个节点表示为<script type="math/tex">p_i^w</script>,对应的霍夫曼编码为<script type="math/tex">d_i^w\in(0,1)</script>,其中<script type="math/tex">i=2,3,...l_w</script>。而该节点对应的模型参数表示为<script type="math/tex">\theta_i^w</script>, 其中<script type="math/tex">i=1,2,...l_w-1</script>，没有<script type="math/tex">i=l_w</script>是因为模型参数仅仅针对于霍夫曼树的内部节点。<br>定义<script type="math/tex">w</script>经过的霍夫曼树某一个节点j的逻辑回归概率为<script type="math/tex">P(d_j^w|x_w,\theta_{j-1}^w)</script>，其表达式为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">P(d_j^w|x_w,\theta_&#123;j-1&#125;^w)=\begin&#123;cases&#125; \sigma&#123;(x^T_w\theta_&#123;j-1&#125;)&#125;,&amp; d_j^w=0 \\ 1-\sigma&#123;(x^T_w\theta_&#123;j-1&#125;)&#125;,&amp; d_j^w=1 \end&#123;cases&#125;</span><br></pre></td></tr></table></figure></p>
+<p>那么对于某一个目标输出词<script type="math/tex">w</script>,其最大似然为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">\prod_&#123;j=2&#125;^&#123;l_w&#125;P(d_j^w|x_w,\theta_&#123;j-1&#125;^w)=\prod_&#123;j=2&#125;^&#123;l_w&#125;[\sigma&#123;(x^T_w\theta_&#123;j-1&#125;)&#125;]^&#123;1-d_j^w&#125;[1-\sigma&#123;(x^T_w\theta_&#123;j-1&#125;)&#125;]^&#123;d_j^w&#125;</span><br></pre></td></tr></table></figure></p>
+<p>在word2vec中，由于使用的是随机梯度上升法，所以并没有把所有样本的似然乘起来得到真正的训练集最大似然，仅仅每次只用一个样本更新梯度，这样做的目的是减少梯度计算量。这样我们可以得到<script type="math/tex">w</script>的对数似然函数<script type="math/tex">L</script>如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">L=\log\prod_&#123;j=2&#125;^&#123;l_w&#125;P(d_j^w|x_w,\theta_&#123;j-1&#125;^w)=\sum_&#123;j=2&#125;^&#123;l_w&#125;((1-d_j^w)\log[\sigma&#123;(x^T_w\theta_&#123;j-1&#125;)&#125;]+d_j^w\log[1-\sigma&#123;(x^T_w\theta_&#123;j-1&#125;)&#125;])</span><br></pre></td></tr></table></figure></p>
+<p>要得到模型中w词向量和内部节点的模型参数<script type="math/tex">\theta</script>, 我们使用梯度上升法即可。首先我们求模型参数<script type="math/tex">\theta_{j-1}^w</script>的梯度：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">\frac&#123;\partial L&#125;&#123;\partial \theta_&#123;j-1&#125;^w&#125;=(1-d_j^w)\frac&#123;\sigma&#123;(x^T_w\theta_&#123;j-1&#125;^w)&#125;(1-\sigma&#123;(x^T_w\theta_&#123;j-1&#125;^w)&#125;)&#125;&#123;\sigma&#123;(x^T_w\theta_&#123;j-1&#125;^w)&#125;&#125;x_w-d_j^w\frac&#123;\sigma&#123;(x^T_w\theta_&#123;j-1&#125;^w)&#125;(1-\sigma&#123;(x^T_w\theta_&#123;j-1&#125;^w)&#125;)&#125;&#123;1-\sigma&#123;(x^T_w\theta_&#123;j-1&#125;^w)&#125;&#125;x_w   </span><br><span class="line"></span><br><span class="line">=(1-d_j^w)(1-\sigma&#123;(x^T_w\theta_&#123;j-1&#125;^w)&#125;)x_w-d_j^w\sigma&#123;(x^T_w\theta_&#123;j-1&#125;^w)&#125;x_w</span><br><span class="line"></span><br><span class="line">=(1-d_j^w-\sigma&#123;(x^T_w\theta_&#123;j-1&#125;^w)&#125;)x_w</span><br></pre></td></tr></table></figure></p>
+<p>如果大家看过之前写的逻辑回归原理小结，会发现这里的梯度推导过程基本类似。</p>
+<p>同样的方法，可以求出<script type="math/tex">x_w</script>的梯度表达式如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">\frac&#123;\partial L&#125;&#123;\partial x_w&#125;=\sum_&#123;j=2&#125;^&#123;l_w&#125;(1-d_j^w-\sigma&#123;(x^T_w\theta_&#123;j-1&#125;^w)&#125;)\theta_&#123;j-1&#125;^w</span><br></pre></td></tr></table></figure></p>
+<p>有了梯度表达式，我们就可以用梯度上升法进行迭代来一步步的求解我们需要的所有的<script type="math/tex">\theta_{j-1}^w</script>和<script type="math/tex">x_w</script>。</p>
+<h4 id="3-基于Hierarchical-Softmax的CBOW模型"><a href="#3-基于Hierarchical-Softmax的CBOW模型" class="headerlink" title="3 基于Hierarchical Softmax的CBOW模型"></a>3 基于Hierarchical Softmax的CBOW模型</h4><p>由于word2vec有两种模型：CBOW和Skip-Gram,我们先看看基于CBOW模型时， Hierarchical Softmax如何使用。</p>
+<p>首先我们要定义词向量的维度大小M，以及CBOW的上下文大小2c,这样我们对于训练样本中的每一个词，其前面的c个词和后面的c个词作为了CBOW模型的输入,该词本身作为样本的输出，期望softmax概率最大。</p>
+<p>在做CBOW模型前，我们需要先将词汇表建立成一颗霍夫曼树。</p>
+<p>对于从输入层到隐藏层（投影层），这一步比较简单，就是对w周围的2c个词向量求和取平均即可，即：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">x_w=\frac&#123;1&#125;&#123;2c&#125;\sum_&#123;i=1&#125;^&#123;2c&#125;x_i</span><br></pre></td></tr></table></figure></p>
+<p>第二步，通过梯度上升法来更新我们的<script type="math/tex">\theta_{j-1}^w</script>和<script type="math/tex">x_w</script>，注意这里的<script type="math/tex">x_w</script>是由2c个词向量相加而成，我们做梯度更新完毕后会用梯度项直接更新原始的各个<script type="math/tex">x_i(i=1,2,,,,2c)</script>，即：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">\theta_&#123;j-1&#125;^w=\theta_&#123;j-1&#125;^w+\eta(1-d_j^w-\sigma&#123;(x^T_w\theta_&#123;j-1&#125;^w)&#125;)x_w  </span><br><span class="line"></span><br><span class="line">x_w =x_w +\eta\sum_&#123;j=2&#125;^&#123;l_w&#125;(1-d_j^w-\sigma&#123;(x^T_w\theta_&#123;j-1&#125;^w)&#125;)\theta_&#123;j-1&#125;^w,(i=1,2,...,2c)</span><br></pre></td></tr></table></figure></p>
+<p>其中<script type="math/tex">\eta</script>为梯度上升法的步长。<br>这里总结下基于Hierarchical Softmax的CBOW模型算法流程，梯度迭代使用了随机梯度上升法：</p>
+<p>输入：基于CBOW的语料训练样本，词向量的维度大小M，CBOW的上下文大小2c,步长<script type="math/tex">\eta</script><br>输出：霍夫曼树的内部节点模型参数<script type="math/tex">\theta</script>，所有的词向量w</p>
+<ol>
+<li>基于语料训练样本建立霍夫曼树。</li>
+<li>随机初始化所有的模型参数<script type="math/tex">\theta</script>，所有的词向量w</li>
+<li>进行梯度上升迭代过程，对于训练集中的每一个样本(context(w),w)做如下处理：<br>a) e=0,计算<script type="math/tex">x_w=\frac{1}{2c}\sum_{i=1}^{2c}x_i</script>。<br>b) for j = 2 to <script type="math/tex">l_w</script>, 计算：  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">f=\sigma(x^T_w\theta_&#123;j-1&#125;^w)</span><br><span class="line"></span><br><span class="line">g=(1-d_j^w-f)\eta</span><br><span class="line"></span><br><span class="line">e=e+g\theta_&#123;j-1&#125;^w</span><br><span class="line"></span><br><span class="line">\theta_&#123;j-1&#125;^w=\theta_&#123;j-1&#125;^w+gx_w</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>c) 对于context(w)中的每一个词向量<script type="math/tex">x_i</script>(共2c个)进行更新：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">x_i=x_i+e</span><br></pre></td></tr></table></figure></p>
+<p>d) 如果梯度收敛，则结束梯度迭代，否则回到步骤3继续迭代。</p>
+<h4 id="4-基于Hierarchical-Softmax的Skip-Gram模型"><a href="#4-基于Hierarchical-Softmax的Skip-Gram模型" class="headerlink" title="4 基于Hierarchical Softmax的Skip-Gram模型"></a>4 基于Hierarchical Softmax的Skip-Gram模型</h4><p>现在我们先看看基于Skip-Gram模型时， Hierarchical Softmax如何使用。此时输入的只有一个词w,输出的为2c个词向量context(w)。</p>
+<p>我们对于训练样本中的每一个词，该词本身作为样本的输入， 其前面的c个词和后面的c个词作为了Skip-Gram模型的输出,，期望这些词的softmax概率比其他的词大。</p>
+<p>Skip-Gram模型和CBOW模型其实是反过来的，在上一篇已经讲过。</p>
+<p>在做CBOW模型前，我们需要先将词汇表建立成一颗霍夫曼树。</p>
+<p>对于从输入层到隐藏层（投影层），这一步比CBOW简单，由于只有一个词，所以，即<script type="math/tex">x_w</script>就是词w对应的词向量。</p>
+<p>第二步，通过梯度上升法来更新我们的<script type="math/tex">\theta_{j-1}^w</script>和<script type="math/tex">x_w</script>，注意这里的<script type="math/tex">x_w</script>周围有2c个词向量，此时如果我们期望<script type="math/tex">p(x_i|x_w),i=1,2...2c</script>最大。此时我们注意到由于上下文是相互的，在期望<script type="math/tex">p(x_i|x_w),i=1,2...2c</script>最大化的同时，反过来我们也期<script type="math/tex">p(x_w|x_i),i=1,2...2c</script>最大。那么是使用<script type="math/tex">p(x_i|x_w)</script>好还是P(xw|xi)好呢，word2vec使用了后者，这样做的好处就是在一个迭代窗口内，我们不是只更新<script type="math/tex">x_w</script>一个词，而是<script type="math/tex">x_i,-=1,2...2c</script>共2c个词。这样整体的迭代会更加的均衡。因为这个原因，Skip-Gram模型并没有和CBOW模型一样对输入进行迭代更新，而是对2c个输出进行迭代更新。</p>
+<p>这里总结下基于Hierarchical Softmax的Skip-Gram模型算法流程，梯度迭代使用了随机梯度上升法：</p>
+<p>输入：基于Skip-Gram的语料训练样本，词向量的维度大小M，Skip-Gram的上下文大小2c,步长<script type="math/tex">\eta</script><br>输出：霍夫曼树的内部节点模型参数<script type="math/tex">\theta</script>，所有的词向量w。  </p>
+<ol>
+<li>基于语料训练样本建立霍夫曼树。  </li>
+<li>随机初始化所有的模型参数<script type="math/tex">\theta</script>，所有的词向量w,</li>
+<li>进行梯度上升迭代过程，对于训练集中的每一个样本(w,context(w))做如下处理：<br>a)  for i =1 to 2c:<br>i) e=0<br>ii) for j = 2 to <script type="math/tex">l_w</script>, 计算：  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">f=\sigma(x^T_w\theta_&#123;j-1&#125;^w)</span><br><span class="line"></span><br><span class="line">g=(1-d_j^w-f)\eta</span><br><span class="line"></span><br><span class="line">e=e+g\theta_&#123;j-1&#125;^w</span><br><span class="line"></span><br><span class="line">\theta_&#123;j-1&#125;^w=\theta_&#123;j-1&#125;^w+gx_w</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>iii)<script type="math/tex">x_i=x_i+e</script><br>b)如果梯度收敛，则结束梯度迭代，算法结束，否则回到步骤a继续迭代。  </p>
+<h4 id="5-Hierarchical-Softmax的模型源码和算法的对应"><a href="#5-Hierarchical-Softmax的模型源码和算法的对应" class="headerlink" title="5 Hierarchical Softmax的模型源码和算法的对应　"></a>5 Hierarchical Softmax的模型源码和算法的对应　</h4><p>这里给出上面算法和<a href="https://github.com/tmikolov/word2vec/blob/master/word2vec.c" target="_blank" rel="noopener">word2vec源码</a>中的变量对应关系。</p>
+<p>在源代码中，基于Hierarchical Softmax的CBOW模型算法在435-463行，基于Hierarchical Softmax的Skip-Gram的模型算法在495-519行。大家可以对着源代码再深入研究下算法。</p>
+<p>在源代码中，neule对应我们上面的e, syn0对应我们的<script type="math/tex">x_w</script>, syn1对应我们的<script type="math/tex">\theta_{j-1}^i</script>, layer1_size对应词向量的维度，window对应我们的c。</p>
+<p>另外，vocab[word].code[d]指的是，当前单词word的，第d个编码，编码不含Root结点。vocab[word].point[d]指的是，当前单词word，第d个编码下，前置的结点。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/11/13/Word2Vec原理（一）/" rel="next" title="">
+                <i class="fa fa-chevron-left"></i> 
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/11/13/从Word Embedding到Bert模型—自然语言处理中的预训练技术发展史/" rel="prev" title="从Word Embedding到Bert模型—自然语言处理中的预训练技术发展史">
+                从Word Embedding到Bert模型—自然语言处理中的预训练技术发展史 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/picture/image.png"
+                alt="ZYYZ" />
+            
+              <p class="site-author-name" itemprop="name">ZYYZ</p>
+              <p class="site-description motion-element" itemprop="description">一瓶子不满，半瓶子晃悠。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/zhoujingyi110" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:363663584@qq.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-基于Hierarchical-Softmax的模型概述"><span class="nav-number">1.</span> <span class="nav-text">1 基于Hierarchical Softmax的模型概述</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-基于Hierarchical-Softmax的CBOW模型"><span class="nav-number">2.</span> <span class="nav-text">3 基于Hierarchical Softmax的CBOW模型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-基于Hierarchical-Softmax的Skip-Gram模型"><span class="nav-number">3.</span> <span class="nav-text">4 基于Hierarchical Softmax的Skip-Gram模型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-Hierarchical-Softmax的模型源码和算法的对应"><span class="nav-number">4.</span> <span class="nav-text">5 Hierarchical Softmax的模型源码和算法的对应　</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">ZYYZ</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+
+  
+
+  
+
+</body>
+</html>
