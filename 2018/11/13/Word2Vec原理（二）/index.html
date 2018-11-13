@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="NLP," />
 
 
 
@@ -80,17 +80,18 @@
 
 
 <meta name="description" content="转载自word2vec原理(二) 基于Hierarchical Softmax的模型在word2vec原理(一)CBOW与Skip-Gram模型基础中，我们讲到了使用神经网络的方法来得到词向量语言模型的原理和一些问题，现在我们开始关注word2vec的语言模型如何改进传统的神经网络的方法。由于word2vec有两种改进方法，一种是基于Hierarchical Softmax的，另一种是基于Nega">
+<meta name="keywords" content="NLP">
 <meta property="og:type" content="article">
-<meta property="og:title" content="ZYYZ">
+<meta property="og:title" content="Word2Vec原理（二）">
 <meta property="og:url" content="http://yoursite.com/2018/11/13/Word2Vec原理（二）/index.html">
 <meta property="og:site_name" content="ZYYZ">
 <meta property="og:description" content="转载自word2vec原理(二) 基于Hierarchical Softmax的模型在word2vec原理(一)CBOW与Skip-Gram模型基础中，我们讲到了使用神经网络的方法来得到词向量语言模型的原理和一些问题，现在我们开始关注word2vec的语言模型如何改进传统的神经网络的方法。由于word2vec有两种改进方法，一种是基于Hierarchical Softmax的，另一种是基于Nega">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/picture/1042406-20170727105326843-18935623.png">
 <meta property="og:image" content="http://yoursite.com/picture/1042406-20170727105752968-819608237.png">
-<meta property="og:updated_time" content="2018-11-13T07:17:01.010Z">
+<meta property="og:updated_time" content="2018-11-13T07:19:45.552Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="ZYYZ">
+<meta name="twitter:title" content="Word2Vec原理（二）">
 <meta name="twitter:description" content="转载自word2vec原理(二) 基于Hierarchical Softmax的模型在word2vec原理(一)CBOW与Skip-Gram模型基础中，我们讲到了使用神经网络的方法来得到词向量语言模型的原理和一些问题，现在我们开始关注word2vec的语言模型如何改进传统的神经网络的方法。由于word2vec有两种改进方法，一种是基于Hierarchical Softmax的，另一种是基于Nega">
 <meta name="twitter:image" content="http://yoursite.com/picture/1042406-20170727105326843-18935623.png">
 
@@ -128,7 +129,7 @@
 
 
 
-  <title> | ZYYZ</title>
+  <title>Word2Vec原理（二） | ZYYZ</title>
   
 
 
@@ -282,7 +283,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline"></h1>
+          <h1 class="post-title" itemprop="name headline">Word2Vec原理（二）</h1>
         
 
         <div class="post-meta">
@@ -294,7 +295,7 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-13T15:17:30+08:00">
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-13T15:18:00+08:00">
                 2018-11-13
               </time>
             
@@ -304,6 +305,28 @@
             
           </span>
 
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/自然语言处理/" itemprop="url" rel="index">
+                    <span itemprop="name">自然语言处理</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
           
 
           
@@ -332,7 +355,7 @@
       
 
       
-        <p><a href="https://www.cnblogs.com/pinard/p/7243513.html" target="_blank" rel="noopener">转载自word2vec原理(二) 基于Hierarchical Softmax的模型</a><br>在word2vec原理(一)CBOW与Skip-Gram模型基础中，我们讲到了使用神经网络的方法来得到词向量语言模型的原理和一些问题，现在我们开始关注word2vec的语言模型如何改进传统的神经网络的方法。由于word2vec有两种改进方法，一种是基于Hierarchical Softmax的，另一种是基于Negative Sampling的。本文关注于基于Hierarchical Softmax的改进方法，在下一篇讨论基于Negative Sampling的改进方法。  </p>
+        <p><a href="https://www.cnblogs.com/pinard/p/7243513.html" target="_blank" rel="noopener">转载自word2vec原理(二) 基于Hierarchical Softmax的模型</a><br>在word2vec原理(一)CBOW与Skip-Gram模型基础中，我们讲到了使用神经网络的方法来得到词向量语言模型的原理和一些问题，现在我们开始关注word2vec的语言模型如何改进传统的神经网络的方法。由于word2vec有两种改进方法，一种是基于Hierarchical Softmax的，另一种是基于Negative Sampling的。本文关注于基于Hierarchical Softmax的改进方法，在下一篇讨论基于Negative Sampling的改进方法。<br><a id="more"></a>  </p>
 <h4 id="1-基于Hierarchical-Softmax的模型概述"><a href="#1-基于Hierarchical-Softmax的模型概述" class="headerlink" title="1 基于Hierarchical Softmax的模型概述"></a>1 基于Hierarchical Softmax的模型概述</h4><p>我们先回顾下传统的神经网络词向量语言模型，里面一般有三层，输入层（词向量），隐藏层和输出层（softmax层）。里面最大的问题在于从隐藏层到输出的softmax层的计算量很大，因为要计算所有词的softmax概率，再去找概率最大的值。这个模型如下图所示。其中V是词汇表的大小。<br><img src="\picture\1042406-20170727105326843-18935623.png" alt="image"><br>word2vec对这个模型做了改进，首先，对于从输入层到隐藏层的映射，没有采取神经网络的线性变换加激活函数的方法，而是采用简单的对所有输入词向量求和并取平均的方法。比如输入的是三个4维词向量：(1,2,3,4),(9,6,11,8),(5,10,7,12),那么我们word2vec映射后的词向量就是(5,6,7,8)。由于这里是从多个词向量变成了一个词向量。  </p>
 <p>第二个改进就是从隐藏层到输出的softmax层这里的计算量个改进。为了避免要计算所有词的softmax概率，word2vec采样了霍夫曼树来代替从隐藏层到输出softmax层的映射。我们在上一节已经介绍了霍夫曼树的原理。如何映射呢？这里就是理解word2vec的关键所在了。  </p>
 <p>由于我们把之前所有都要计算的从输出softmax层的概率计算变成了一颗二叉霍夫曼树，那么我们的softmax概率计算只需要沿着树形结构进行就可以了。如下图所示，我们可以沿着霍夫曼树从根节点一直走到我们的叶子节点的词w2。<br><img src="\picture\1042406-20170727105752968-819608237.png" alt="image"><br>和之前的神经网络语言模型相比，我们的霍夫曼树的所有内部节点就类似之前神经网络隐藏层的神经元,其中，根节点的词向量对应我们的投影后的词向量，而所有叶子节点就类似于之前神经网络softmax输出层的神经元，叶子节点的个数就是词汇表的大小。在霍夫曼树中，隐藏层到输出层的softmax映射不是一下子完成的，而是沿着霍夫曼树一步步完成的，因此这种softmax取名为”Hierarchical Softmax”。  </p>
@@ -396,6 +419,12 @@
 
     <footer class="post-footer">
       
+        <div class="post-tags">
+          
+            <a href="/tags/NLP/" rel="tag"># NLP</a>
+          
+        </div>
+      
 
       
       
@@ -405,8 +434,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/11/13/Word2Vec原理（一）/" rel="next" title="">
-                <i class="fa fa-chevron-left"></i> 
+              <a href="/2018/11/13/从Word Embedding到Bert模型—自然语言处理中的预训练技术发展史/" rel="next" title="从Word Embedding到Bert模型—自然语言处理中的预训练技术发展史">
+                <i class="fa fa-chevron-left"></i> 从Word Embedding到Bert模型—自然语言处理中的预训练技术发展史
               </a>
             
           </div>
@@ -414,6 +443,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/11/13/Word2Vec原理（一）/" rel="prev" title="Word2Vec原理（一）">
+                Word2Vec原理（一） <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -765,6 +798,26 @@
   
 
   
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
   
 
 

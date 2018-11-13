@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="NLP," />
 
 
 
@@ -79,22 +79,23 @@
 
 
 
-<meta name="description" content="转载自word2vec原理(一)CBOW与Skip-Gram模型基础word2vec是google在2013年推出的一个NLP工具，它的特点是将所有的词向量化，这样词与词之间就可以定量的去度量他们之间的关系，挖掘词之间的联系。虽然源码是开源的，但是谷歌的代码库国内无法访问，因此本文的讲解word2vec原理以Github上的word2vec代码为准。本文关注于word2vec的基础知识。   1">
+<meta name="description" content="转载自word2vec原理(一)CBOW与Skip-Gram模型基础word2vec是google在2013年推出的一个NLP工具，它的特点是将所有的词向量化，这样词与词之间就可以定量的去度量他们之间的关系，挖掘词之间的联系。虽然源码是开源的，但是谷歌的代码库国内无法访问，因此本文的讲解word2vec原理以Github上的word2vec代码为准。本文关注于word2vec的基础知识。">
+<meta name="keywords" content="NLP">
 <meta property="og:type" content="article">
-<meta property="og:title" content="ZYYZ">
+<meta property="og:title" content="Word2Vec原理（一）">
 <meta property="og:url" content="http://yoursite.com/2018/11/13/Word2Vec原理（一）/index.html">
 <meta property="og:site_name" content="ZYYZ">
-<meta property="og:description" content="转载自word2vec原理(一)CBOW与Skip-Gram模型基础word2vec是google在2013年推出的一个NLP工具，它的特点是将所有的词向量化，这样词与词之间就可以定量的去度量他们之间的关系，挖掘词之间的联系。虽然源码是开源的，但是谷歌的代码库国内无法访问，因此本文的讲解word2vec原理以Github上的word2vec代码为准。本文关注于word2vec的基础知识。   1">
+<meta property="og:description" content="转载自word2vec原理(一)CBOW与Skip-Gram模型基础word2vec是google在2013年推出的一个NLP工具，它的特点是将所有的词向量化，这样词与词之间就可以定量的去度量他们之间的关系，挖掘词之间的联系。虽然源码是开源的，但是谷歌的代码库国内无法访问，因此本文的讲解word2vec原理以Github上的word2vec代码为准。本文关注于word2vec的基础知识。">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/picture/1042406-20170713145606275-2100371803.png">
 <meta property="og:image" content="http://yoursite.com/picture/1042406-20170713150625759-1047275185.png">
 <meta property="og:image" content="http://yoursite.com/picture/1042406-20170713151608181-1336632086.png">
 <meta property="og:image" content="http://yoursite.com/picture/1042406-20170713152436931-1817493891.png">
 <meta property="og:image" content="http://yoursite.com/picture/1042406-20170713161800009-962272008.png">
-<meta property="og:updated_time" content="2018-11-13T07:08:48.561Z">
+<meta property="og:updated_time" content="2018-11-13T07:19:36.874Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="ZYYZ">
-<meta name="twitter:description" content="转载自word2vec原理(一)CBOW与Skip-Gram模型基础word2vec是google在2013年推出的一个NLP工具，它的特点是将所有的词向量化，这样词与词之间就可以定量的去度量他们之间的关系，挖掘词之间的联系。虽然源码是开源的，但是谷歌的代码库国内无法访问，因此本文的讲解word2vec原理以Github上的word2vec代码为准。本文关注于word2vec的基础知识。   1">
+<meta name="twitter:title" content="Word2Vec原理（一）">
+<meta name="twitter:description" content="转载自word2vec原理(一)CBOW与Skip-Gram模型基础word2vec是google在2013年推出的一个NLP工具，它的特点是将所有的词向量化，这样词与词之间就可以定量的去度量他们之间的关系，挖掘词之间的联系。虽然源码是开源的，但是谷歌的代码库国内无法访问，因此本文的讲解word2vec原理以Github上的word2vec代码为准。本文关注于word2vec的基础知识。">
 <meta name="twitter:image" content="http://yoursite.com/picture/1042406-20170713145606275-2100371803.png">
 
 
@@ -131,7 +132,7 @@
 
 
 
-  <title> | ZYYZ</title>
+  <title>Word2Vec原理（一） | ZYYZ</title>
   
 
 
@@ -285,7 +286,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline"></h1>
+          <h1 class="post-title" itemprop="name headline">Word2Vec原理（一）</h1>
         
 
         <div class="post-meta">
@@ -297,7 +298,7 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-13T15:08:58+08:00">
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-13T15:18:00+08:00">
                 2018-11-13
               </time>
             
@@ -307,6 +308,28 @@
             
           </span>
 
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/自然语言处理/" itemprop="url" rel="index">
+                    <span itemprop="name">自然语言处理</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
           
 
           
@@ -335,7 +358,7 @@
       
 
       
-        <p><a href="https://www.cnblogs.com/pinard/p/7160330.html" target="_blank" rel="noopener">转载自word2vec原理(一)CBOW与Skip-Gram模型基础</a><br>word2vec是google在2013年推出的一个NLP工具，它的特点是将所有的词向量化，这样词与词之间就可以定量的去度量他们之间的关系，挖掘词之间的联系。虽然源码是开源的，但是谷歌的代码库国内无法访问，因此本文的讲解word2vec原理以Github上的word2vec代码为准。本文关注于word2vec的基础知识。  </p>
+        <p><a href="https://www.cnblogs.com/pinard/p/7160330.html" target="_blank" rel="noopener">转载自word2vec原理(一)CBOW与Skip-Gram模型基础</a><br>word2vec是google在2013年推出的一个NLP工具，它的特点是将所有的词向量化，这样词与词之间就可以定量的去度量他们之间的关系，挖掘词之间的联系。虽然源码是开源的，但是谷歌的代码库国内无法访问，因此本文的讲解word2vec原理以Github上的word2vec代码为准。本文关注于word2vec的基础知识。<br><a id="more"></a>  </p>
 <h4 id="1-词向量基础"><a href="#1-词向量基础" class="headerlink" title="1 词向量基础"></a>1 词向量基础</h4><p>用词向量来表示词并不是word2vec的首创，在很久之前就出现了。最早的词向量是很冗长的，它使用是词向量维度大小为整个词汇表的大小，对于每个具体的词汇表中的词，将对应的位置置为1。比如我们有下面的5个词组成的词汇表，词”Queen”的序号为2， 那么它的词向量就是(0,1,0,0,0)。同样的道理，词”Woman”的词向量就是(0,0,0,1,0)。这种词向量的编码方式我们一般叫做1-of-N representation或者one hot representation.<br><img src="\picture\1042406-20170713145606275-2100371803.png" alt="image"><br>One hot representation用来表示词向量非常简单，但是却有很多问题。最大的问题是我们的词汇表一般都非常大，比如达到百万级别，这样每个词都用百万维的向量来表示简直是内存的灾难。这样的向量其实除了一个位置是1，其余的位置全部都是0，表达的效率不高，能不能把词向量的维度变小呢？</p>
 <p>Dristributed representation可以解决One hot representation的问题，它的思路是通过训练，将每个词都映射到一个较短的词向量上来。所有的这些词向量就构成了向量空间，进而可以用普通的统计学的方法来研究词与词之间的关系。这个较短的词向量维度是多大呢？这个一般需要我们在训练时自己来指定。</p>
 <p>比如下图我们将词汇表里的词用”Royalty”,”Masculinity”, “Femininity”和”Age”4个维度来表示，King这个词对应的词向量可能是(0.99,0.99,0.05,0.7)。当然在实际情况中，我们并不能对词向量的每个维度做一个很好的解释。<br><img src="\picture\1042406-20170713150625759-1047275185.png" alt="image"><br>有了用Dristributed representation表示的较短的词向量，我们就可以较容易的分析词之间的关系了，比如我们将词的维度降维到2维，有一个有趣的研究表明，用下图的词向量表示我们的词时，我们可以发现：  </p>
@@ -377,6 +400,12 @@
 
     <footer class="post-footer">
       
+        <div class="post-tags">
+          
+            <a href="/tags/NLP/" rel="tag"># NLP</a>
+          
+        </div>
+      
 
       
       
@@ -386,8 +415,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/11/13/从Word Embedding到Bert模型—自然语言处理中的预训练技术发展史/" rel="next" title="从Word Embedding到Bert模型—自然语言处理中的预训练技术发展史">
-                <i class="fa fa-chevron-left"></i> 从Word Embedding到Bert模型—自然语言处理中的预训练技术发展史
+              <a href="/2018/11/13/Word2Vec原理（二）/" rel="next" title="Word2Vec原理（二）">
+                <i class="fa fa-chevron-left"></i> Word2Vec原理（二）
               </a>
             
           </div>
@@ -395,10 +424,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018/11/13/Word2Vec原理（二）/" rel="prev" title="">
-                 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -750,6 +775,26 @@
   
 
   
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
   
 
 
