@@ -79,13 +79,13 @@
 
 
 
-<meta name="description" content="翻译自Transformers可视化文章通过可视化动图的方法将复杂Transfomer算法讲解的清楚明白，读完一种浑身舒爽的感觉，就像和一个懂自己的人聊完天一样畅快淋漓。这么好的文章所以我就翻译一下，主要为自己整理下思路。   在之前的博客中，我们介绍了Attention目前深度学习模型中常用的方法。Attention概念的提出提高了神经机器翻译应用的效果。在这篇文章中，我们介绍Transfome">
+<meta name="description" content="翻译自Transformers可视化文章通过可视化动图的方法将复杂Transfomer算法讲解的清楚明白，读完一种浑身舒爽的感觉，就像和一个懂自己的人聊完天一样畅快淋漓。这么好的文章所以我就翻译一下，主要为自己整理下思路。">
 <meta name="keywords" content="NLP,Transformer">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Transfomer可视化详解">
 <meta property="og:url" content="http://yoursite.com/2018/12/19/Transformer可视化详解/index.html">
 <meta property="og:site_name" content="ZYYZ">
-<meta property="og:description" content="翻译自Transformers可视化文章通过可视化动图的方法将复杂Transfomer算法讲解的清楚明白，读完一种浑身舒爽的感觉，就像和一个懂自己的人聊完天一样畅快淋漓。这么好的文章所以我就翻译一下，主要为自己整理下思路。   在之前的博客中，我们介绍了Attention目前深度学习模型中常用的方法。Attention概念的提出提高了神经机器翻译应用的效果。在这篇文章中，我们介绍Transfome">
+<meta property="og:description" content="翻译自Transformers可视化文章通过可视化动图的方法将复杂Transfomer算法讲解的清楚明白，读完一种浑身舒爽的感觉，就像和一个懂自己的人聊完天一样畅快淋漓。这么好的文章所以我就翻译一下，主要为自己整理下思路。">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/picture/t1.png">
 <meta property="og:image" content="http://yoursite.com/picture/t2.png">
@@ -122,10 +122,10 @@
 <meta property="og:image" content="http://yoursite.com/picture/transformer_logits_output_and_label.png">
 <meta property="og:image" content="http://yoursite.com/picture/output_target_probability_distributions.png">
 <meta property="og:image" content="http://yoursite.com/picture/output_trained_model_probability_distributions.png">
-<meta property="og:updated_time" content="2018-12-19T08:56:50.007Z">
+<meta property="og:updated_time" content="2018-12-19T08:58:14.969Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Transfomer可视化详解">
-<meta name="twitter:description" content="翻译自Transformers可视化文章通过可视化动图的方法将复杂Transfomer算法讲解的清楚明白，读完一种浑身舒爽的感觉，就像和一个懂自己的人聊完天一样畅快淋漓。这么好的文章所以我就翻译一下，主要为自己整理下思路。   在之前的博客中，我们介绍了Attention目前深度学习模型中常用的方法。Attention概念的提出提高了神经机器翻译应用的效果。在这篇文章中，我们介绍Transfome">
+<meta name="twitter:description" content="翻译自Transformers可视化文章通过可视化动图的方法将复杂Transfomer算法讲解的清楚明白，读完一种浑身舒爽的感觉，就像和一个懂自己的人聊完天一样畅快淋漓。这么好的文章所以我就翻译一下，主要为自己整理下思路。">
 <meta name="twitter:image" content="http://yoursite.com/picture/t1.png">
 
 
@@ -388,8 +388,7 @@
       
 
       
-        <p>翻译自<a href="https://jalammar.github.io/illustrated-transformer/" target="_blank" rel="noopener">Transformers可视化</a>文章通过可视化动图的方法将复杂Transfomer算法讲解的清楚明白，读完一种浑身舒爽的感觉，就像和一个懂自己的人聊完天一样畅快淋漓。这么好的文章所以我就翻译一下，主要为自己整理下思路。  </p>
-<p>在之前的博客中，我们介绍了Attention目前深度学习模型中常用的方法。Attention概念的提出提高了神经机器翻译应用的效果。在这篇文章中，我们介绍Transfomer，这种模型使用Attention方法来提高模型训练速度。Transfomer模型在一些具体任务中性能优于Google的NMT。但是它最大的优点是它能并行运算。事实上，Googl云建议使用Transfomer作为模型参考来使用他们的云TPU服务。所以让我们分析这个模型看看它是运行的。  </p>
+        <p>翻译自<a href="https://jalammar.github.io/illustrated-transformer/" target="_blank" rel="noopener">Transformers可视化</a>文章通过可视化动图的方法将复杂Transfomer算法讲解的清楚明白，读完一种浑身舒爽的感觉，就像和一个懂自己的人聊完天一样畅快淋漓。这么好的文章所以我就翻译一下，主要为自己整理下思路。<br><a id="more"></a><br>在之前的博客中，我们介绍了Attention目前深度学习模型中常用的方法。Attention概念的提出提高了神经机器翻译应用的效果。在这篇文章中，我们介绍Transfomer，这种模型使用Attention方法来提高模型训练速度。Transfomer模型在一些具体任务中性能优于Google的NMT。但是它最大的优点是它能并行运算。事实上，Googl云建议使用Transfomer作为模型参考来使用他们的云TPU服务。所以让我们分析这个模型看看它是运行的。  </p>
 <p>Transfomer在这篇文章上提出的<a href="https://arxiv.org/abs/1706.03762" target="_blank" rel="noopener"> Attention is All You Need</a>，Tensorflow和PyTorch已经代码实现了。这篇文章，我们尝试尽量简化一些东西，逐一介绍这个算法，以便对没有深入了解这个课题的人也能更容易理解。  </p>
 <h3 id="整体介绍"><a href="#整体介绍" class="headerlink" title="整体介绍"></a>整体介绍</h3><p>让我们先把这个模型当做一个黑盒子来看，在机器翻译应用中，输入端提供一种语言的句子，经过这个Transfomer算法的黑盒子后，输出它的另一种语言的翻译。<br><img src="\picture\t1.png" alt="t1"><br>打开这个黑盒子，我们看到一个编码模块和一个解码模块，并且他们是相连的。<br><img src="\picture\t2.png" alt="t2"><br>这个编码模块是一组编码器的堆叠（这篇文章中堆叠了6个编码器，6这个数字没什么特别的，只是定义了一个参数）。解码模块也包含了相同数量的解码器。<br><img src="\picture\t3.png" alt="t3"><br>编码器的结构完全相同（当然他们不共享参数），每一个都分为两个子层：<br><img src="\picture\t4.png" alt="t4"><br>编码器的输入首先流入一个自注意层，当它编码一个特定的单词时，这一层帮助编码器观察输入句子中其他单词，在后面的文章中我们将进一步分析自注意力机制。<br>自注意力层的输出传到了一个前反馈神经网络，完全相同的前馈网络独立应用于每个位置。<br>解码器也有这两层，但是在他们之间还有一个注意力层，它帮助解码器关注输入句子中的相关部分（和seq2seq模型中的attention相似）（注：根据上一时刻的输出判断当前翻译的关注点应该集中在哪些词语上，就是seq2seq_attention模型中的做法）<br><img src="\picture\Transformer_decoder.png" alt="Transformer_decoder"></p>
 <h3 id="将张量引入图片表示"><a href="#将张量引入图片表示" class="headerlink" title="将张量引入图片表示"></a>将张量引入图片表示</h3><p>现在我们来看这个模型的主要模块，让我们开始研究各种张量/向量，以及它们怎么在这些模块之间流动，从模型训练的输入到输出。<br>通常作为NLP应用，我们开始先将每个输入的单词通过<a href="https://medium.com/deeper-learning/glossary-of-deep-learning-word-embedding-f90c3cec34ca" target="_blank" rel="noopener">词嵌入算法</a>转化为向量<br><img src="\picture\embeddings.png" alt="embeddings"><br>词嵌入只发生在编码模块的最底端（注：也就是最开始），这个结构对于所有的编码器来说是最常用的，接收一个每个向量大小为512维的向量列表，在编码器底部就是词嵌入向量。但在其他编码器中，它可能是编码器的直接输出。这个列表的超参数是我们设定的，基本上它设置为训练集中最长句子的长度（注：list大小为训练集中最长句子的长度。每个词向量的维度是512）<br>将输入句子用词向量表示之后，它们流过编码器的两层中的每一层。<br><img src="\picture\encoder_with_tensors.png" alt="encoder_with_tensors"><br>下面我们开始看Transfomer的一个关键属性，每个位置的单词在编码器中在它自己的路径中流动。自注意力层依赖这些路径。然而，前反馈层不具有这些依赖，因此各种路径可以在流过前反馈层是并行执行。（注：attention层要计算每个单词之间的关系，）<br>接下来，我们将示例切换为较短的句子，我们将查看编码器的每个子层中发生的情况。  </p>

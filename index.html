@@ -354,75 +354,14 @@
 
       
         
-          
-            <p>翻译自<a href="https://jalammar.github.io/illustrated-transformer/" target="_blank" rel="noopener">Transformers可视化</a>文章通过可视化动图的方法将复杂Transfomer算法讲解的清楚明白，读完一种浑身舒爽的感觉，就像和一个懂自己的人聊完天一样畅快淋漓。这么好的文章所以我就翻译一下，主要为自己整理下思路。  </p>
-<p>在之前的博客中，我们介绍了Attention目前深度学习模型中常用的方法。Attention概念的提出提高了神经机器翻译应用的效果。在这篇文章中，我们介绍Transfomer，这种模型使用Attention方法来提高模型训练速度。Transfomer模型在一些具体任务中性能优于Google的NMT。但是它最大的优点是它能并行运算。事实上，Googl云建议使用Transfomer作为模型参考来使用他们的云TPU服务。所以让我们分析这个模型看看它是运行的。  </p>
-<p>Transfomer在这篇文章上提出的<a href="https://arxiv.org/abs/1706.03762" target="_blank" rel="noopener"> Attention is All You Need</a>，Tensorflow和PyTorch已经代码实现了。这篇文章，我们尝试尽量简化一些东西，逐一介绍这个算法，以便对没有深入了解这个课题的人也能更容易理解。  </p>
-<h3 id="整体介绍"><a href="#整体介绍" class="headerlink" title="整体介绍"></a>整体介绍</h3><p>让我们先把这个模型当做一个黑盒子来看，在机器翻译应用中，输入端提供一种语言的句子，经过这个Transfomer算法的黑盒子后，输出它的另一种语言的翻译。<br><img src="\picture\t1.png" alt="t1"><br>打开这个黑盒子，我们看到一个编码模块和一个解码模块，并且他们是相连的。<br><img src="\picture\t2.png" alt="t2"><br>这个编码模块是一组编码器的堆叠（这篇文章中堆叠了6个编码器，6这个数字没什么特别的，只是定义了一个参数）。解码模块也包含了相同数量的解码器。<br><img src="\picture\t3.png" alt="t3"><br>编码器的结构完全相同（当然他们不共享参数），每一个都分为两个子层：<br><img src="\picture\t4.png" alt="t4"><br>编码器的输入首先流入一个自注意层，当它编码一个特定的单词时，这一层帮助编码器观察输入句子中其他单词，在后面的文章中我们将进一步分析自注意力机制。<br>自注意力层的输出传到了一个前反馈神经网络，完全相同的前馈网络独立应用于每个位置。<br>解码器也有这两层，但是在他们之间还有一个注意力层，它帮助解码器关注输入句子中的相关部分（和seq2seq模型中的attention相似）（注：根据上一时刻的输出判断当前翻译的关注点应该集中在哪些词语上，就是seq2seq_attention模型中的做法）<br><img src="\picture\Transformer_decoder.png" alt="Transformer_decoder"></p>
-<h3 id="将张量引入图片表示"><a href="#将张量引入图片表示" class="headerlink" title="将张量引入图片表示"></a>将张量引入图片表示</h3><p>现在我们来看这个模型的主要模块，让我们开始研究各种张量/向量，以及它们怎么在这些模块之间流动，从模型训练的输入到输出。<br>通常作为NLP应用，我们开始先将每个输入的单词通过<a href="https://medium.com/deeper-learning/glossary-of-deep-learning-word-embedding-f90c3cec34ca" target="_blank" rel="noopener">词嵌入算法</a>转化为向量<br><img src="\picture\embeddings.png" alt="embeddings"><br>词嵌入只发生在编码模块的最底端（注：也就是最开始），这个结构对于所有的编码器来说是最常用的，接收一个每个向量大小为512维的向量列表，在编码器底部就是词嵌入向量。但在其他编码器中，它可能是编码器的直接输出。这个列表的超参数是我们设定的，基本上它设置为训练集中最长句子的长度（注：list大小为训练集中最长句子的长度。每个词向量的维度是512）<br>将输入句子用词向量表示之后，它们流过编码器的两层中的每一层。<br><img src="\picture\encoder_with_tensors.png" alt="encoder_with_tensors"><br>下面我们开始看Transfomer的一个关键属性，每个位置的单词在编码器中在它自己的路径中流动。自注意力层依赖这些路径。然而，前反馈层不具有这些依赖，因此各种路径可以在流过前反馈层是并行执行。（注：attention层要计算每个单词之间的关系，）<br>接下来，我们将示例切换为较短的句子，我们将查看编码器的每个子层中发生的情况。  </p>
-<h3 id="现在我们开始编码"><a href="#现在我们开始编码" class="headerlink" title="现在我们开始编码"></a>现在我们开始编码</h3><p>我们之前已经提到过，编码器的输入是多个词向量组成的一个列表，编码器将这组向量传到自注意力层进行处理，然后传入前反馈神经网络，最后输出的结果传入到下一个编码器。<br><img src="\picture\encoder_with_tensors_2.png" alt="encoder_with_tensors_2"><br>每个位置的单词都经过自编码过程。然后，它们各自通过一个前馈神经网络 - 每个向量分别流过这个完全相同的网络。  </p>
-<h3 id="整体介绍自注意力模型"><a href="#整体介绍自注意力模型" class="headerlink" title="整体介绍自注意力模型"></a>整体介绍自注意力模型</h3><p>不要被我提出的“自注意力”所愚弄，这是每个人都能弄明白的概念。在阅读Attention is All You Need这篇论文之前，我来没听说过这个概念。让我们提炼它是如何工作的。<br>下面这个句子是我们输入的要翻译的句子：  </p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">”The animal didn&apos;t cross the street because it was too tired”</span><br></pre></td></tr></table></figure>
-<p>“it”在这个句子中指代的是什么？是“street”还是“animal”？对人类来说这个为很简单，但是对算法来说并不是.当模型处理单词“it”时，self-attention将“it”和“animal”联系在一起。  </p>
-<p>当模型处理每个输入单词时（在输入句子中每个位置的单词）self-attention允许他观察句子中其他位置的单词，寻找更好编码该单词的线索。  </p>
-<p>如果你熟悉RNN，允许RNN将其处理过的先前单词/向量的表示与其正在处理的当前单词/向量合并，想一想RNN如何维持隐藏状态。self-attention是Transfomer维持这个隐藏状态的方法，将其他单词的理解融入我们当前正在处理的单词。<br><img src="\picture\transformer_self-attention_visualization.png" alt="transformer_self-attention_visualization"><br>当我们在第五个编码器编码单词“it”，部分机器注意力聚焦在“The Animal”，将它的一部分表达融入到“it”（注：it的编码表达包含了指代the animal的意思）  </p>
-<h3 id="详细介绍Self-Attention"><a href="#详细介绍Self-Attention" class="headerlink" title="详细介绍Self-Attention"></a>详细介绍Self-Attention</h3><p>让我们搜先看怎么使用向量计算self-attention，它使用矩阵实现的。  </p>
-<p>计算self-attention的<strong>第一步</strong>是对每个编码器的输入向量（词嵌入向量）创建三个向量矩阵。所以对于每个输入的词嵌入向量，我们创建Query向量，Key向量，和Value向量。这些向量通过词嵌入向量乘三个矩阵得到的，这三个矩阵在训练过程中被训练。（三个矩阵分别为：<script type="math/tex">W^Q,W^K,W^V</script>）  </p>
-<p>需要注意的是新生成的向量的维度比词嵌入向量小。它们是64维，然而词嵌入向量和编码器输入/输出的向量是512维。它们并不一定要更小，这是一种架构选择，可以使多头注意力（大多数）的计算保持不变。<br><img src="\picture\transformer_self_attention_vectors.png" alt="transformer_self_attention_vectors"><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">q_1=X_1\times W^Q </span><br><span class="line"></span><br><span class="line">k_1=X_1\times W^K</span><br><span class="line"></span><br><span class="line">v_1=X_1\times W^V</span><br></pre></td></tr></table></figure></p>
-<p>“query”、”key”和”value”向量表示的是什么？<br>它们是抽象的，有助于计算和思考attention。只要你继续读下面的attention计算方法，你就大概了解这些向量扮演的角色了。  </p>
-<p><strong>第二步</strong>是计算self-attention的得分。我们为下面例子的第一个单词“Thinking”计算self-attention。我们实际上需要计算输入句子中的每一个单词的得分。这个得分决定了在当前我们编码一个在确定位置的单词时，对其他部分的单词需要聚焦多少注意力。（注：就是编码这个单词时，需要考虑多少其他单词的影响，为每个单词赋予不同参考权重）  </p>
-<p>这个分数通过对应单词的query向量和key向量点乘得到，（注：query和key向量是我们之前计算过的）所以当我们计算这个单词对位置一的self-attention，就是q1和k1点乘，对位置而的得分是q1和k2点乘。<br><img src="\picture\transformer_self_attention_score.png" alt="transformer_self_attention_score"><br><strong>第三步和第四步</strong>是对得分除以8（对key向量的维度开平方根，在论文里用的是64。这回得到更稳定的梯度，也有其他的可选值，但是默认选项是这个）让后将这个结果传入softmax操作（）<br><img src="\picture\self-attention_softmax.png" alt="self-attention_softmax"><br>softmax得分决定每个单词在这个位置得到表达的多少。当然在这个位置的单词将会得到最高的softmax得分，但是有时关注当前单词和其他单词的相关度也是有用的。  </p>
-<p><strong>第五步</strong>softmax得分乘以value向量（准备把他们加起来），直观上保持我们想要关注的单词的value不变，并减小不相关的单词的value（例如，通过乘以0.0001这样小的数字）。  </p>
-<p><strong>第六步</strong>将加权的vlaue向量加起来，得到了第一个单词在self-attention层的输出。<br><img src="\picture\self-attention-output.png" alt="self-attention-output"><br>得到的向量我们可以传到feed-forward层中。然而在实际中，该计算通过矩阵的形式完成，这样计算的更快。现在我们已经直观的看到了单词级别上的计算。  </p>
-<h3 id="Self-Attention的矩阵计算"><a href="#Self-Attention的矩阵计算" class="headerlink" title="Self-Attention的矩阵计算"></a>Self-Attention的矩阵计算</h3><p><strong>第一步</strong>计算Query。Key和Value矩阵，我们把词嵌入向量整理为一个矩阵X，用X乘以我们训练的权重矩阵（<script type="math/tex">W^Q,W^K,W^V</script>）。<br><img src="\picture\self-attention-matrix-calculation.png" alt="self-attention-matrix-calculation"><br>X矩阵中的每一行对应于输入句子中的一个单词。我们再次看到嵌入向量的大小差异（实际512维图中4维）和q / k / v向量（实际64维，图中3维）</p>
-<p><strong>最后</strong>我们处理了这些矩阵，我们可以在一个公式中浓缩步骤2到6来计算self-attention层的输出。<br><img src="\picture\self-attention-matrix-calculation-2.png" alt="self-attention-matrix-calculation-2">  </p>
-<h3 id="多头部attention"><a href="#多头部attention" class="headerlink" title="多头部attention"></a>多头部attention</h3><p>本文通过增加一种称为“多头”关注的机制，进一步完善了self-attention层。这以两种方式改善了attention的性能：  </p>
-<ol>
-<li>这取决于有幸关注不同位置的能力，在上面的模型中，z1包含其他单词编码，但主要还是由单词本身决定。 如果我们翻译一句“动物没有过马路，因为它太累了”，我们会想知道“它”指的是哪个词，z1包含其他单词的编码对于这个任务就是有用的。  </li>
-<li>它使attention层拥有多个“表达子空间”。正如接下来看到的，不仅有一个多头attention，而且还设置多个Query/Key/Value权重矩阵（Transfomer用八个attention头，因此我们最终为每个编码器/解码器设置了8个）。这些集合中的每一个都是随机初始化的。然后，在训练之后，每组将输入嵌入（或来自较低层编码器/解码器的向量）投影到不同的表示子空间中。<br><img src="\picture\transformer_attention_heads_qkv.png" alt="transformer_attention_heads_qkv">  </li>
-</ol>
-<p>通过多头attention，我们为每个磁头维护单独的Q/K/V权重矩阵，从而产生不同的Q/K/V矩阵。 正如我们之前所做的那样，我们将X乘以WQ/WK/WV矩阵以产生Q/K/V矩阵。  </p>
-<p>如果我们进行上面概述的相同的self-attention计算，只有八个不同的时刻使用不同的权重矩阵，我们最终得到八个不同的Z矩阵。<br><img src="\picture\transformer_attention_heads_z.png" alt="transformer_attention_heads_z"><br>这让我们面临一些挑战。前馈层接收八个矩阵它期望单个矩阵（每个词的向量）。所以我们需要一种方法将这八个压缩成一个矩阵。  </p>
-<p>怎么做呢？我们通过添加一个矩阵<script type="math/tex">W^o</script>，将得到的8个头矩阵连接起来，<script type="math/tex">W^o</script>乘以它，得到一个矩阵。<br><img src="\picture\transformer_attention_heads_weight_matrix_o.png" alt="transformer_attention_heads_weight_matrix_o"><br>这就是多头self-attention的全部内容。我意识到这是一小部分矩阵，下面让我尝试将他们全部整合到一起，这样我们就可以从整体看到它们。  </p>
-<p><img src="\picture\transformer_multi-headed_self-attention-recap.png" alt="transformer_multi-headed_self-attention-recap">  </p>
-<p>现在我们已经触及了注意力的头，让我们重新审视我们之前的例子，看看不同的注意力头在哪里聚焦，因为我们在我们的例句中编码“it”这个词：<br><img src="\picture\transformer_self-attention_visualization_2.png" alt="transformer_self-attention_visualization_2">  </p>
-<p>当我们对“它”这个词进行编码时，一个注意力的焦点主要集中在“动物”上，而另一个注意力集中在“疲惫” - 从某种意义上说，模型对“它”这个词的表现形式在某些表现形式中有所表现。“动物”和“疲倦”。  </p>
-<p>但是，如果我们将所有注意力添加到图片中，那么事情可能更难理解：<br><img src="\picture\transformer_self-attention_visualization_3.png" alt="transformer_self-attention_visualization_3"></p>
-<h3 id="使用位置编码表示序列的顺序"><a href="#使用位置编码表示序列的顺序" class="headerlink" title="使用位置编码表示序列的顺序"></a>使用位置编码表示序列的顺序</h3><p>我们到目前为止描述的模型中缺少的一件事，是一种考虑输入序列中单词顺序的方法。  </p>
-<p>为了解决这个问题，Transfomer对每个输入的词嵌入中添加了一个向量。这些向量遵循模型学习的特定模式，有助于确定每个单词的位置，或者序列中不同单词的距离。直观上的感受是添加了这些值后，在嵌入向量投影到Q/K/V向量和attention的点积间提供有意义的距离。（注：为每个单词的attention过程中提供单词间距离的意义，单词的间距会对这个单词的编码产生影响）<br><img src="\picture\transformer_positional_encoding_vectors.png" alt="transformer_positional_encoding_vectors"><br>为了让模型了解单词的顺序，我们添加位置编码向量 - 其值遵循特定模式。  </p>
-<p>如果我们假设嵌入的维度为4，那么实际的位置编码将如下所示：<br><img src="\picture\transformer_positional_encoding_example.png" alt="transformer_positional_encoding_example"><br>嵌入大小为4的位置编码的真实示例  </p>
-<p>这种模式可能是什么样的？<br>在下图中，每行对应一个向量的位置编码。因此第一行将是我们添加到输入序列中第一个字的嵌入的向量。每行包含512个值-每个值的值介于1和-1之间。我们对它们进行了颜色编码，使图案可见。<br><img src="\picture\transformer_positional_encoding_large_example.png" alt="transformer_positional_encoding_large_example"><br>嵌入大小为512（列）的20个字（行）的位置编码的真实示例。您可以看到它在中心位置分成两半。 这是因为左半部分的值由一个函数（使用正弦）生成，而右半部分由另一个函数（使用余弦）生成。 然后将它们连接起来以形成每个位置编码矢量。  </p>
-<p>位置编码的公式在论文（3.5节）中描述。您可以在get_timing_signal_1d（）中看到用于生成位置编码的代码。这不是得到位置编码的唯一方法。然而，它具有能够扩展到看不见的序列长度的优点（例如，如果要求我们训练的模型翻译句子的时间长于我们训练集中的任何一个句子）。  </p>
-<h3 id="残差"><a href="#残差" class="headerlink" title="残差"></a>残差</h3><p>在继续之前我们需要提到的编码器架构中的一个细节是每个编码器中的每个子层（self-attention，ffnn）采用残差连接，然后是正则化步骤。<br><img src="\picture\transformer_resideual_layer_norm.png" alt="transformer_resideual_layer_norm"><br>如果我们将与self-attention相关的向量和正则化操作可视化结果如下所示：<br><img src="\picture\transformer_resideual_layer_norm_2.png" alt="transformer_resideual_layer_norm_2"><br>这也适用于解码器子层。如果考虑两层堆叠的编码器和解码器的Transfomer，它看起来是这样的：<br><img src="\picture\transformer_resideual_layer_norm_3.png" alt="transformer_resideual_layer_norm_3">  </p>
-<h3 id="解码器"><a href="#解码器" class="headerlink" title="解码器"></a>解码器</h3><p>现在我们已经介绍了编码器方面的大多数概念。，我们基本也知道了解码器是怎么工作的。但是现在然我们看看它们是如何协同工作的。  </p>
-<p>编码器从输入序列开始处理，顶层编码器将输出变换成一组attention的K和V向量。它们被用在每个解码器的“encoder-decoder attention”层，这有助于解码器关注输入序列不同位置。<br><img src="\picture\transformer_decoding_1.gif" alt="transformer_decoding_1"><br>完成编码阶段后，我们开始解码阶段。解码阶段中的每个步骤输出来自输出序列的元素（在这种情况下为英语翻译句子）。  </p>
-<p>重复该过程，知道达到特殊符号，表明Transfomer的解码器已经完成所有输出。每步的输出在下一个时刻中喂到解码器的最底层，解码器像编码器一样冒泡编码结果。就像我们给编码器的输入一样。我们在解码器输入中得到每个单词的词嵌入并添加位置编码，标志每个单词的位置。（注：这里的解释就是，在解码的第一步骤中，解码器的self-attention没有用，只用到了解码器中的两层，“endcoder-decoder attention”得到第一个输出，在下一个时刻，将这个输出像encoder那样，作为decoder的输入传到decoder的self-attention中）<br><img src="\picture\transformer_decoding_2.gif" alt="transformer_decoding_2"><br>解码器中的self-attention和编码器有点不同：</p>
-<ul>
-<li>在解码器中，self-attention层仅允许关注输出序列中更靠前的位置。这是由于self-attention中计算softmax步骤之前mask了后面的位置造成的（设置为-inf）。  </li>
-<li>“encoder-decoder attention”层的工作方式就像多头部的self-attention一样。只是它从下面的层创建Queries矩阵，并从编码器堆栈的输出中得到Keys和Values矩阵。  </li>
-</ul>
-<h3 id="最后的Linear层和Softmax层"><a href="#最后的Linear层和Softmax层" class="headerlink" title="最后的Linear层和Softmax层"></a>最后的Linear层和Softmax层</h3><p>解码器堆栈输出的是浮点向量。我们怎么把他们转换成单词呢？这就是最后的Linear层并且最后跟着的Softmax层所完成的工作。  </p>
-<p>线性层是一个简单的全连接的神经网络，它将解码器堆栈产生的向量投影到一个更大，更大的向量中，称为对数向量。  </p>
-<p>让我们假设我们的模型知道从训练数据集中学到的10,000个独特的英语单词（我们的模型的“输出词汇表”）。 这将使解码层输出的对数向量对应10,000个单词-对每个单词输出一个唯一的得分。 这就是我们如何解释线性层模型的输出。（注：训练过程中得到词向量，解码层最后输出词向量，我们和输入步骤相反，将得到的词向量再根据训练过程中得到的词向量矩阵对应会到某个单词）  </p>
-<p>让后softmax层将这些得分转换为概率。（所有概率和为1.0）选择概率最高的元素，并且将其对应的单词作为该步骤的输出。<br><img src="\picture\transformer_decoder_output_softmax.png" alt="transformer_decoder_output_softmax"><br>该图从底部开始，产生的向量作为解码器堆栈的输出，最后输出对应的单词。  </p>
-<h3 id="回顾训练"><a href="#回顾训练" class="headerlink" title="回顾训练"></a>回顾训练</h3><p>现在我们已经覆盖了一个训练好的Transfomer的整个前进过程，从直观上看这个训练模型是有用的。  </p>
-<p>在训练期间，未训练的模型敬通过完全相同的前进方式。但由于我们正在对标记的训练集进行训练，因此我们可以将其输出与实际的正确输出做比较。  </p>
-<p>为了看到这一点，我么假设我们的输出词汇只包含六个单词（“a”，“am”，“i”，“thanks”，“student”和“<eos>”（“句末”的缩写））。<br><img src="\picture\vocabulary.png" alt="vocabulary"><br>在我们开始训练之前，我们模型的输出词汇是在预处理阶段创建的。  </eos></p>
-<p>一旦我们定义了输出词汇表，我们就可以使用相同宽度的向量来表示词汇表中的每个单词。 这也称为单热编码。 例如，我们可以使用以下向量指示单词“am”：<br><img src="\picture\one-hot-vocabulary-example.png" alt="one-hot-vocabulary-example"><br>例子：我们输出汇one-hot编码<br>在回顾一下之后，让 我们讨论一下模型的损失函数-我们在训练阶段优化的指标，以引导一个训练有素且令人惊讶的精确模型。  </p>
-<h3 id="损失函数"><a href="#损失函数" class="headerlink" title="损失函数"></a>损失函数</h3><p>假设我们正在训练我们的模型。这是我们在训练阶段的第一步，我们正在通过一个简单的例子进行训练 - 将“merci”翻译成“谢谢”。</p>
-<p>这意味着，我们希望输出是指示“谢谢”一词的概率分布。但由于这种模式还没有接受过训练，所以这种情况不太可能发生。<br><img src="\picture\transformer_logits_output_and_label.png" alt="transformer_logits_output_and_label"><br>由于模型的参数（权重）都是随机初始化的，因此（未经训练的）模型产生具有每个单元/单词的任意值的概率分布。 我们可以将它与实际输出进行比较，然后使用反向传播调整所有模型的权重，使输出更接近所需的输出。由于模型的参数（权重）都是随机初始化的，因此（未经训练的）模型产生具有每个单元/单词的任意值的概率分布。我们可以将它与实际输出进行比较，然后使用反向传播调整所有模型的权重，使输出更接近所需的输出。  </p>
-<p>你如何比较两个概率分布？我们简单地从另一个中减去一个。有关更多详细信息，请查看交叉熵和Kullback-Leibler散度。</p>
-<p>但请注意，这是一个过于简单的例子。 更现实的是，我们将使用长于一个单词的句子。 例如 - 输入：“je suis étudiant”和预期输出：“我是学生”。这实际意味着，我们希望我们的模型能够连续输出概率分布，其中：  </p>
-<ul>
-<li>每个概率分布由宽度为vocab_size的向量表示（在我们的玩具示例中为6，但更实际地是3,000或10,000的数字）  </li>
-<li>第一概率分布在与单词“i”相关联的单元处具有最高概率  </li>
-<li>第二概率分布在与单词“am”相关联的单元格中具有最高概率  </li>
-<li>依此类推，直到第五个输出分布指示’&lt;句末结束&gt;’符号，其中还有一个与10,000元素词汇表相关联的单元格。<br><img src="\picture\output_target_probability_distributions.png" alt="output_target_probability_distributions"><br>我们将在一个样本句子的训练示例中训练我们的模型的目标概率分布。  </li>
-</ul>
-<p>在足够大的数据集上训练模型足够的时间之后，我们希望产生的概率分布看起来像这样：<br><img src="\picture\output_trained_model_probability_distributions.png" alt="output_trained_model_probability_distributions"><br>希望通过培训，该模型将输出我们期望的正确翻译。当然，这个短语是否是训练数据集的一部分并不是真正的指示（参见：交叉验证）。请注意，即使不太可能是该时间步的输出，每个位置都会获得一点概率 - 这是softmax的一个非常有用的属性，有助于训练过程。</p>
-<p>现在，因为模型一次生成一个输出，我们可以假设模型从该概率分布中选择具有最高概率的单词并丢弃其余的单词。 这是一种方法（称为贪婪解码）。另一种方法是坚持，比如前两个词（例如，’我’和’a’），然后在下一步中，运行模型两次：一旦假设第一个输出位置是单词’I’，另一次假设第一个输出位置是单词’me’，并且考虑到＃1和＃2位置保留的任何版本产生的错误都较少。 我们重复这个位置＃2和＃3……等等。这种方法称为“波束搜索”，在我们的例子中，beam_size是两个（因为我们在计算位置＃1和＃2的波束后比较了结果），top_beams也是两个（因为我们保留了两个词）。 这些都是您可以试验的超参数。</p>
-
-          
+          <p>翻译自<a href="https://jalammar.github.io/illustrated-transformer/" target="_blank" rel="noopener">Transformers可视化</a>文章通过可视化动图的方法将复杂Transfomer算法讲解的清楚明白，读完一种浑身舒爽的感觉，就像和一个懂自己的人聊完天一样畅快淋漓。这么好的文章所以我就翻译一下，主要为自己整理下思路。<br>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/12/19/Transformer可视化详解/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
