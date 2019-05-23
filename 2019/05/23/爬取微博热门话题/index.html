@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="爬虫," />
 
 
 
@@ -79,17 +79,24 @@
 
 
 
-<meta name="description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub.">
+<meta name="description" content="1 介绍本文主要介绍爬取微博热门话题及话题下的微博。这是我毕业设计的数据来源，在这里先记录一下进展。">
+<meta name="keywords" content="爬虫">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Hello World">
-<meta property="og:url" content="http://yoursite.com/2018/05/18/hello-world/index.html">
+<meta property="og:title" content="爬取微博热门话题">
+<meta property="og:url" content="http://yoursite.com/2019/05/23/爬取微博热门话题/index.html">
 <meta property="og:site_name" content="ZYYZ">
-<meta property="og:description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub.">
+<meta property="og:description" content="1 介绍本文主要介绍爬取微博热门话题及话题下的微博。这是我毕业设计的数据来源，在这里先记录一下进展。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-05-18T09:12:38.753Z">
+<meta property="og:image" content="http://yoursite.com/picture/ali_server.png">
+<meta property="og:image" content="http://yoursite.com/picture/json.png">
+<meta property="og:image" content="http://yoursite.com/picture/%E7%AB%AF%E5%8F%A3.png">
+<meta property="og:image" content="http://yoursite.com/picture/%E5%AE%9D%E5%A1%94.png">
+<meta property="og:image" content="http://yoursite.com/picture/%E8%AE%A1%E5%88%92%E4%BB%BB%E5%8A%A1.png">
+<meta property="og:updated_time" content="2019-05-23T06:20:30.038Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Hello World">
-<meta name="twitter:description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub.">
+<meta name="twitter:title" content="爬取微博热门话题">
+<meta name="twitter:description" content="1 介绍本文主要介绍爬取微博热门话题及话题下的微博。这是我毕业设计的数据来源，在这里先记录一下进展。">
+<meta name="twitter:image" content="http://yoursite.com/picture/ali_server.png">
 
 
 
@@ -119,13 +126,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2018/05/18/hello-world/"/>
+  <link rel="canonical" href="http://yoursite.com/2019/05/23/爬取微博热门话题/"/>
 
 
 
 
 
-  <title>Hello World | ZYYZ</title>
+  <title>爬取微博热门话题 | ZYYZ</title>
   
 
 
@@ -262,7 +269,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/05/18/hello-world/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/23/爬取微博热门话题/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="ZYYZ">
@@ -279,7 +286,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Hello World</h1>
+          <h1 class="post-title" itemprop="name headline">爬取微博热门话题</h1>
         
 
         <div class="post-meta">
@@ -291,8 +298,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-18T14:21:55+08:00">
-                2018-05-18
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-23T14:13:00+08:00">
+                2019-05-23
               </time>
             
 
@@ -301,6 +308,28 @@
             
           </span>
 
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/自然语言处理/" itemprop="url" rel="index">
+                    <span itemprop="name">自然语言处理</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
           
 
           
@@ -329,15 +358,51 @@
       
 
       
-        <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.<br><a id="more"></a>  </p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="noopener">Deployment</a></p>
+        <h4 id="1-介绍"><a href="#1-介绍" class="headerlink" title="1 介绍"></a>1 介绍</h4><p>本文主要介绍爬取微博热门话题及话题下的微博。这是我毕业设计的数据来源，在这里先记录一下进展。<br><a id="more"></a><br>我买的阿里云服务器，【轻量应用服务器】预装宝塔Linux面板——三个月￥28.5。配置如下： </p>
+<p><img src="\picture\ali_server.png" alt="image"></p>
+<p>用起来还是很方便的，宝塔面板可视化文件上传下载，搭建web网站简便，可以定时爬虫程序。在阿里云服务器进行运行爬虫代码并连接到mysql数据库，运行环境如下：  </p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>版本</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>服务器</td>
+<td>CentOS Linux 7.4.1708 (Core)</td>
+</tr>
+<tr>
+<td>web服务器</td>
+<td>Apache 2.4</td>
+</tr>
+<tr>
+<td>数据库</td>
+<td>mysql5.7</td>
+</tr>
+<tr>
+<td>PYTHON</td>
+<td>python 3.6.5</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h4 id="2-搭建过程"><a href="#2-搭建过程" class="headerlink" title="2 搭建过程"></a>2 搭建过程</h4><h5 id="2-1-解析页面"><a href="#2-1-解析页面" class="headerlink" title="2.1 解析页面"></a>2.1 解析页面</h5><p>爬取的是微博移动版 m.weibo.cn 在页面中按F12，找到json格式的页面，如下图，之后就是根据json的格式解析页面找到我们需要的信息，这个工作就是把返回的页面信息慢慢看了一层层解析字典，没什么捷径。  </p>
+<p><img src="\picture\json.png" alt="image">  </p>
+<p>这步完成之后可以得到微博热搜话题榜单，在话题榜单的字典里有该话题的url，进入某个话题的url同上的操作，爬取话题下的所有微博。<strong>需要下滑才能显示下面的页面，这个通过设置url的page字段，知道返回ok=0认为没有了。</strong>  </p>
+<h5 id="2-2-搭建阿里云服务器"><a href="#2-2-搭建阿里云服务器" class="headerlink" title="2.2 搭建阿里云服务器"></a>2.2 搭建阿里云服务器</h5><p>完成上面的操作基本完成了数据的爬取，不过大量爬取的过程还是有些bug需要调，具体的可以看代码。下面来搭建阿里云服务器完成以下操作路径。  </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">graph TD</span><br><span class="line">A[定时任务]--&gt;|每小时运行|B1(热门话题爬虫程序)</span><br><span class="line">A[定时任务]--&gt;|每8小时运行|B2(爬取话题下微博)</span><br><span class="line">B1--&gt;c1(存储到数据库hot_topic表)</span><br><span class="line">B2--&gt;c2(存储到数据库hot_wb表)</span><br></pre></td></tr></table></figure>
+<h3 id="安装python3和pip3"><a href="#安装python3和pip3" class="headerlink" title="安装python3和pip3"></a>安装python3和pip3</h3><p>代码是python写的，在服务器上<a href="https://blog.csdn.net/LeonTom/article/details/81289326" target="_blank" rel="noopener">安装python3和pip3</a>，具体操作按照网上的教程来的，没有问题。<strong>需要注意的是我的服务器是Centos7.3和之前常用的Ubuntu系统还是有些差别的虽然都是Linux内核，一些安装命令是不同的。</strong>  </p>
+<h3 id="数据库的坑"><a href="#数据库的坑" class="headerlink" title="数据库的坑"></a>数据库的坑</h3><p>然后就是把代码上传到服务器上，在宝塔面板上操作，测试代码，然后下一步是存储到数据库中，我开始使用的是psycopg库，但是连接出现了很多问题连接不上，一方面是云服务器的设置问题，另一方面是库的问题，所以我在解决了云服务器的设置问题后使用了另一个数据库连接库pymysql，可以连接成功。  </p>
+<p>这里面如果第一次配置阿里云服务器还是有些坑的，在这里卡了一下。  </p>
+<p>【坑一】安装MySql5.7，至少是高版本的，不然表情无法保存到数据库，不会报错会有warning。虽然程序员不怕warning但是实在太多了。。。。  </p>
+<p>【坑二】由于端口没有开发，无法访问数据库。这里数据库对应的端口是3306。因为我安装了phpmyadmin他的端口是888，一直以为这个就是数据的端口实际不是。。。  </p>
+<p><strong>端口的开发需要在两个地方同时开：1.在阿里云轻量服务器的控制的防火墙添加端口。2.在宝塔linux面板添加。只有在两个地方都添加才能正常访问对应的服务。</strong></p>
+<p><img src="\picture\%E7%AB%AF%E5%8F%A3.png" alt="image"></p>
+<p><img src="\picture\%E5%AE%9D%E5%A1%94.png" alt="image"></p>
+<h3 id="定时设置"><a href="#定时设置" class="headerlink" title="定时设置"></a>定时设置</h3><p>这里的定时设置可以在宝塔linux面板的<strong>计划任务</strong>里面直接设置，很方便，我之前也查过一些定时的命令，不知道为啥没有执行，所以直接在上面设置执行周期和运行脚本。脚本内容直接写python3运行程序的命令，路径是绝对路径。<br><img src="\picture\%E8%AE%A1%E5%88%92%E4%BB%BB%E5%8A%A1.png" alt="image"><br>添加成功后在下面会显示任务，点执行看下执行效果，还可以查看日志。整个流程就连接起来了，就可以每天自动爬取微博热门话题及微博了。  </p>
 
       
     </div>
@@ -353,6 +418,12 @@
 
     <footer class="post-footer">
       
+        <div class="post-tags">
+          
+            <a href="/tags/爬虫/" rel="tag"># 爬虫</a>
+          
+        </div>
+      
 
       
       
@@ -362,15 +433,15 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
+              <a href="/2019/04/11/python基础语法/" rel="next" title="python基础语法">
+                <i class="fa fa-chevron-left"></i> python基础语法
+              </a>
+            
           </div>
 
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018/05/18/hello/" rel="prev" title="程序员惯例————hello word！！！">
-                程序员惯例————hello word！！！ <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -522,7 +593,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Quick-Start"><span class="nav-number">1.</span> <span class="nav-text">Quick Start</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Create-a-new-post"><span class="nav-number">1.1.</span> <span class="nav-text">Create a new post</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Run-server"><span class="nav-number">1.2.</span> <span class="nav-text">Run server</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Generate-static-files"><span class="nav-number">1.3.</span> <span class="nav-text">Generate static files</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Deploy-to-remote-sites"><span class="nav-number">1.4.</span> <span class="nav-text">Deploy to remote sites</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-介绍"><span class="nav-number">1.</span> <span class="nav-text">1 介绍</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-搭建过程"><span class="nav-number">2.</span> <span class="nav-text">2 搭建过程</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#2-1-解析页面"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 解析页面</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-2-搭建阿里云服务器"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 搭建阿里云服务器</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装python3和pip3"><span class="nav-number"></span> <span class="nav-text">安装python3和pip3</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据库的坑"><span class="nav-number"></span> <span class="nav-text">数据库的坑</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#定时设置"><span class="nav-number"></span> <span class="nav-text">定时设置</span></a></div>
             
 
           </div>
@@ -722,6 +793,26 @@
   
 
   
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
   
 
 
